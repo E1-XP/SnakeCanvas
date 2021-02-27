@@ -1,4 +1,4 @@
-import { state, setState } from "./state";
+import { state, setState, ORIENTATION, DIRECTIONS } from "./state";
 
 export const draw = (ctx) => {
   ctx.fillstyle = state.fillStyle;
@@ -10,13 +10,56 @@ export const clearCanvas = (ctx) => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 };
 
-export const beginPositionUpdate = () =>
+export const loopPositionUpdate = () =>
   setInterval(() => {
-    const newXPosition = state.x + canvas.width / 10;
-    const x = state.x >= canvas.width ? 0 : newXPosition;
+    switch (state.orientation) {
+      case ORIENTATION.HORIZONTAL:
+        {
+          switch (state.direction) {
+            case DIRECTIONS.LEFT:
+              {
+                const newXPosition = state.x - canvas.width / 10;
+                const x = state.x < 0 ? canvas.width : newXPosition;
 
-    setState(state, { x });
-  }, 1000);
+                setState(state, { x });
+              }
+              break;
+            case DIRECTIONS.RIGHT:
+              {
+                const newXPosition = state.x + canvas.width / 10;
+                const x = state.x >= canvas.width ? 0 : newXPosition;
+
+                setState(state, { x });
+              }
+              break;
+          }
+        }
+        break;
+
+      case ORIENTATION.VERTICAL:
+        {
+          switch (state.direction) {
+            case DIRECTIONS.UP:
+              {
+                const newYPosition = state.y - canvas.width / 10;
+                const y = state.y < 0 ? canvas.height : newYPosition;
+
+                setState(state, { y });
+              }
+              break;
+            case DIRECTIONS.DOWN:
+              {
+                const newYPosition = state.y + canvas.width / 10;
+                const y = state.y >= canvas.height ? 0 : newYPosition;
+
+                setState(state, { y });
+              }
+              break;
+          }
+        }
+        break;
+    }
+  }, state.speed);
 
 export const renderLoop = (ctx) => {
   requestAnimationFrame(() => {
