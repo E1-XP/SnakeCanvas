@@ -13,7 +13,7 @@ export const DIRECTIONS = {
 export const state = {
   x: canvas.width / 2,
   y: canvas.height / 2,
-  speed: 1000,
+  speed: 500,
   orientation: ORIENTATION.HORIZONTAL,
   direction: DIRECTIONS.RIGHT,
   length: 1,
