@@ -7,3 +7,13 @@ canvas {
   height: 100%;
   border: 1px solid orangered;
 }
+
+.scoreboard {
+  color: powderblue;
+  font-size: 2rem;
+}
+
+.scoreboard__value {
+  margin: 1em auto;
+  width: 2em;
+}

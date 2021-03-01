@@ -13,10 +13,13 @@ export const DIRECTIONS = {
 export const state = {
   x: canvas.width / 2,
   y: canvas.height / 2,
+  size: 20,
+  foodCoords: { x: 0, y: 0 },
   speed: 500,
   orientation: ORIENTATION.HORIZONTAL,
   direction: DIRECTIONS.RIGHT,
   length: 1,
+  score: 0,
   fillStyle: "#ccc",
 };
 

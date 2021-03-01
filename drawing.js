@@ -1,8 +1,35 @@
 import { state, setState, ORIENTATION, DIRECTIONS } from "./state";
+import { handleFoodCollision } from "./game";
+
+const drawSnake = (ctx) => {
+  let i = state.length;
+  while (i) {
+    ctx.fillStyle = "#000";
+    const border = 2;
+
+    ctx.fillRect(
+      state.x - border,
+      state.y - border,
+      state.size + border,
+      state.size + border
+    );
+
+    ctx.fillStyle = state.fillStyle;
+    ctx.fillRect(state.x, state.y, state.size, state.size);
+    i--;
+  }
+};
+
+const drawFood = (ctx) => {
+  const { x, y } = state.foodCoords;
+
+  ctx.fillStyle = "#000";
+  ctx.fillRect(x, y, state.size, state.size);
+};
 
 export const draw = (ctx) => {
-  ctx.fillstyle = state.fillStyle;
-  ctx.fillRect(state.x, state.y, 20, 20);
+  drawFood(ctx);
+  drawSnake(ctx);
 };
 
 export const clearCanvas = (ctx) => {
@@ -60,12 +87,13 @@ export const updatePosition = () => {
   }
 };
 
-export const renderLoop = (ctx) => {
+export const gameLoop = (ctx) => {
   requestAnimationFrame(() => {
     clearCanvas(ctx);
     draw(ctx);
     updatePosition();
+    handleFoodCollision();
 
-    renderLoop(ctx);
+    gameLoop(ctx);
   });
 };
