@@ -11,14 +11,19 @@ export const DIRECTIONS = {
 };
 
 export const state = {
-  x: canvas.width / 2,
-  y: canvas.height / 2,
+  snake: [
+    {
+      x: canvas.width / 2,
+      y: canvas.height / 2,
+    },
+  ],
   size: 20,
   foodCoords: { x: 0, y: 0 },
-  speed: 500,
+  speed: 5000,
   orientation: ORIENTATION.HORIZONTAL,
   direction: DIRECTIONS.RIGHT,
-  length: 1,
+  directionChangeCoords: null,
+  previousDirection: DIRECTIONS.UP,
   score: 0,
   fillStyle: "#ccc",
 };
@@ -31,5 +36,5 @@ export const setState = (state = {}, updatedStatePartial) => {
   if (noChanges) return;
 
   Object.assign(state, updatedStatePartial);
-  console.log(state);
+  // console.log("final", state.previousDirection);
 };

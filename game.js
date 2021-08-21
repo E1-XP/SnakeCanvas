@@ -8,8 +8,8 @@ const KEYS = {
 };
 
 export const calcRandomFoodPlace = () => {
-  const x = Math.random() * (canvas.width - state.size);
-  const y = Math.random() * (canvas.height - state.size);
+  const x = state.snake[0].x + state.size * 2; //Math.random() * (canvas.width - state.size);
+  const y = state.snake[0].y + state.size * 2; //Math.random() * (canvas.height - state.size);
 
   return { x, y };
 };
@@ -20,7 +20,41 @@ export const initializeStateWithRandomFoodPos = () => {
 
 const updateDOMScoreboard = () => {
   const element = document.getElementById("score");
-  element.innerHTML = state.score;
+  element.innerHTML = `${state.score}`;
+};
+
+const getNewSegmentCoords = () => {
+  const len = state.snake.length;
+
+  switch (state.direction) {
+    case "UP": {
+      const x = state.snake[len - 1].x;
+      const y = state.snake[len - 1].y + state.size;
+
+      return { x, y };
+    }
+
+    case "DOWN": {
+      const x = state.snake[len - 1].x;
+      const y = state.snake[len - 1].y - state.size;
+
+      return { x, y };
+    }
+
+    case "LEFT": {
+      const x = state.snake[len - 1].x + state.size;
+      const y = state.snake[len - 1].y;
+
+      return { x, y };
+    }
+
+    case "RIGHT": {
+      const x = state.snake[len - 1].x - state.size;
+      const y = state.snake[len - 1].y;
+
+      return { x, y };
+    }
+  }
 };
 
 export const handleFoodCollision = () => {
@@ -31,57 +65,105 @@ export const handleFoodCollision = () => {
     yEnd: state.foodCoords.y + state.size,
   };
 
-  const collidedOnXAxis = [state.x, state.x + state.size].some(
+  const collidedOnXAxis = [
+    state.snake[0].x,
+    state.snake[0].x + state.size,
+  ].some(
     (coord) =>
       coord >= foodObjectBorders.xStart && coord <= foodObjectBorders.xEnd
   );
 
-  const collidedOnYAxis = [state.y, state.y + state.size].some(
+  const collidedOnYAxis = [
+    state.snake[0].y,
+    state.snake[0].y + state.size,
+  ].some(
     (coord) =>
       coord >= foodObjectBorders.yStart && coord <= foodObjectBorders.yEnd
   );
 
   if (collidedOnXAxis && collidedOnYAxis) {
     initializeStateWithRandomFoodPos();
-    setState(state, { score: state.score + 1, length: state.length + 1 });
+    setState(state, {
+      score: state.score + 1,
+      snake: [...state.snake, getNewSegmentCoords()],
+    });
     updateDOMScoreboard();
   }
 };
 
 export const enableSteering = (e) => {
-  console.log(e.keyCode);
   switch (e.keyCode) {
     case KEYS.LEFT:
       {
-        setState(state, {
+        const shouldChangePrevDir = DIRECTIONS.LEFT !== state.direction;
+
+        const stateUpd = {
           direction: DIRECTIONS.LEFT,
           orientation: ORIENTATION.HORIZONTAL,
-        });
+          directionChangeCoords: shouldChangePrevDir
+            ? { ...state.snake[0] }
+            : state.directionChangeCoords,
+          previousDirection: shouldChangePrevDir
+            ? state.direction
+            : state.previousDirection,
+        };
+
+        setState(state, stateUpd);
       }
       break;
     case KEYS.RIGHT:
       {
-        setState(state, {
+        const shouldChangePrevDir = DIRECTIONS.RIGHT !== state.direction;
+
+        const stateUpd = {
           direction: DIRECTIONS.RIGHT,
           orientation: ORIENTATION.HORIZONTAL,
-        });
+          directionChangeCoords: shouldChangePrevDir
+            ? { ...state.snake[0] }
+            : state.directionChangeCoords,
+          previousDirection: shouldChangePrevDir
+            ? state.direction
+            : state.previousDirection,
+        };
+
+        setState(state, stateUpd);
       }
       break;
 
     case KEYS.UP:
       {
-        setState(state, {
+        const shouldChangePrevDir = DIRECTIONS.UP !== state.direction;
+
+        const stateUpd = {
           direction: DIRECTIONS.UP,
           orientation: ORIENTATION.VERTICAL,
-        });
+          directionChangeCoords: shouldChangePrevDir
+            ? { ...state.snake[0] }
+            : state.directionChangeCoords,
+          previousDirection: shouldChangePrevDir
+            ? state.direction
+            : state.previousDirection,
+        };
+
+        setState(state, stateUpd);
       }
       break;
     case KEYS.DOWN:
       {
-        setState(state, {
+        const shouldChangePrevDir = DIRECTIONS.DOWN !== state.direction;
+
+        const stateUpd = {
           direction: DIRECTIONS.DOWN,
           orientation: ORIENTATION.VERTICAL,
-        });
+          directionChangeCoords: shouldChangePrevDir
+            ? { ...state.snake[0] }
+            : state.directionChangeCoords,
+          previousDirection: shouldChangePrevDir
+            ? state.direction
+            : state.previousDirection,
+        };
+
+        setState(state, stateUpd);
       }
       break;
   }
