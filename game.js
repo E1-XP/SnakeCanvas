@@ -83,6 +83,7 @@ export const handleFoodCollision = () => {
 
   if (collidedOnXAxis && collidedOnYAxis) {
     initializeStateWithRandomFoodPos();
+
     setState(state, {
       score: state.score + 1,
       snake: [...state.snake, getNewSegmentCoords()],
@@ -92,78 +93,47 @@ export const handleFoodCollision = () => {
 };
 
 export const enableSteering = (e) => {
+  const genStateUpdate = (direction, orientation) => {
+    const shouldChangePrevDir = direction !== state.direction;
+
+    return {
+      direction,
+      orientation,
+      directionChangeCoords: shouldChangePrevDir
+        ? { ...state.snake[0] }
+        : state.directionChangeCoords,
+      previousDirection: shouldChangePrevDir
+        ? state.direction
+        : state.previousDirection,
+    };
+  };
+
   switch (e.keyCode) {
     case KEYS.LEFT:
       {
-        const shouldChangePrevDir = DIRECTIONS.LEFT !== state.direction;
-
-        const stateUpd = {
-          direction: DIRECTIONS.LEFT,
-          orientation: ORIENTATION.HORIZONTAL,
-          directionChangeCoords: shouldChangePrevDir
-            ? { ...state.snake[0] }
-            : state.directionChangeCoords,
-          previousDirection: shouldChangePrevDir
-            ? state.direction
-            : state.previousDirection,
-        };
-
-        setState(state, stateUpd);
+        setState(
+          state,
+          genStateUpdate(DIRECTIONS.LEFT, ORIENTATION.HORIZONTAL)
+        );
       }
       break;
     case KEYS.RIGHT:
       {
-        const shouldChangePrevDir = DIRECTIONS.RIGHT !== state.direction;
-
-        const stateUpd = {
-          direction: DIRECTIONS.RIGHT,
-          orientation: ORIENTATION.HORIZONTAL,
-          directionChangeCoords: shouldChangePrevDir
-            ? { ...state.snake[0] }
-            : state.directionChangeCoords,
-          previousDirection: shouldChangePrevDir
-            ? state.direction
-            : state.previousDirection,
-        };
-
-        setState(state, stateUpd);
+        setState(
+          state,
+          genStateUpdate(DIRECTIONS.RIGHT, ORIENTATION.HORIZONTAL)
+        );
       }
       break;
 
     case KEYS.UP:
       {
-        const shouldChangePrevDir = DIRECTIONS.UP !== state.direction;
-
-        const stateUpd = {
-          direction: DIRECTIONS.UP,
-          orientation: ORIENTATION.VERTICAL,
-          directionChangeCoords: shouldChangePrevDir
-            ? { ...state.snake[0] }
-            : state.directionChangeCoords,
-          previousDirection: shouldChangePrevDir
-            ? state.direction
-            : state.previousDirection,
-        };
-
-        setState(state, stateUpd);
+        setState(state, genStateUpdate(DIRECTIONS.UP, ORIENTATION.VERTICAL));
       }
       break;
     case KEYS.DOWN:
       {
-        const shouldChangePrevDir = DIRECTIONS.DOWN !== state.direction;
-
-        const stateUpd = {
-          direction: DIRECTIONS.DOWN,
-          orientation: ORIENTATION.VERTICAL,
-          directionChangeCoords: shouldChangePrevDir
-            ? { ...state.snake[0] }
-            : state.directionChangeCoords,
-          previousDirection: shouldChangePrevDir
-            ? state.direction
-            : state.previousDirection,
-        };
-
-        setState(state, stateUpd);
+        setState(state, genStateUpdate(DIRECTIONS.DOWN, ORIENTATION.VERTICAL));
       }
       break;
   }
