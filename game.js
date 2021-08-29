@@ -95,6 +95,8 @@ export const handleFoodCollision = () => {
 export const enableSteering = (e) => {
   const genStateUpdate = (direction, orientation) => {
     const shouldChangePrevDir = direction !== state.direction;
+    const dirChangedOnSameAxis =
+      orientation === state.orientation && direction !== state.direction;
 
     return {
       direction,
@@ -105,6 +107,7 @@ export const enableSteering = (e) => {
       previousDirection: shouldChangePrevDir
         ? state.direction
         : state.previousDirection,
+      snake: dirChangedOnSameAxis ? state.snake.slice().reverse() : state.snake,
     };
   };
 

@@ -19,7 +19,7 @@ export const state = {
   ],
   size: 20,
   foodCoords: { x: 0, y: 0 },
-  speed: 5000,
+  speed: 3000,
   orientation: ORIENTATION.HORIZONTAL,
   direction: DIRECTIONS.RIGHT,
   directionChangeCoords: null,

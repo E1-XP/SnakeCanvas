@@ -17,8 +17,8 @@ const drawSnake = (ctx) => {
     // );
 
     ctx.fillStyle = state.fillStyle;
-    if (!i) ctx.fillStyle = `#eb4034`;
-    if (i && i === state.snake.length - 1) ctx.fillStyle = "#03A9F4";
+    // if (!i) ctx.fillStyle = `#eb4034`;
+    // if (i && i === state.snake.length - 1) ctx.fillStyle = "#03A9F4";
 
     ctx.fillRect(state.snake[i].x, state.snake[i].y, state.size, state.size);
 
@@ -44,139 +44,37 @@ export const clearCanvas = (ctx) => {
 };
 
 export const updatePosition = () => {
-  switch (state.orientation) {
-    case ORIENTATION.HORIZONTAL:
-      {
-        switch (state.direction) {
-          case DIRECTIONS.LEFT:
-            {
-              const updatedSnakeBody = state.snake.map((coords, i, arr) => {
-                if (
-                  previously(DIRECTIONS.UP) &&
-                  i !== 0 &&
-                  arr[i - 1].y < arr[i].y
-                ) {
-                  console.log("1");
-                  return move(DIRECTIONS.UP, coords);
-                }
-
-                if (
-                  previously(DIRECTIONS.DOWN) &&
-                  i !== 0 &&
-                  arr[i].y < arr[i - 1].y
-                ) {
-                  console.log("1.1");
-                  return move(DIRECTIONS.DOWN, coords);
-                }
-
-                return move(DIRECTIONS.LEFT, coords);
-              });
-
-              setState(state, { snake: updatedSnakeBody });
-            }
-            break;
-          case DIRECTIONS.RIGHT:
-            {
-              const updatedSnakeBody = state.snake.map((coords, i, arr) => {
-                if (
-                  previously(DIRECTIONS.DOWN) &&
-                  i !== 0 &&
-                  arr[i].x > arr[i - 1].x - state.size
-                ) {
-                  // console.log("2", state.previousDirection);
-                  return move(DIRECTIONS.DOWN, coords);
-                }
-
-                if (
-                  previously(DIRECTIONS.UP) &&
-                  i !== 0 &&
-                  arr[i].y > arr[i - 1].y
-                ) {
-                  console.log("444");
-                  return move(DIRECTIONS.UP, coords);
-                }
-
-                return move(DIRECTIONS.RIGHT, coords);
-              });
-
-              setState(state, { snake: updatedSnakeBody });
-            }
-            break;
-        }
-      }
-      break;
-
-    case ORIENTATION.VERTICAL:
-      {
-        switch (state.direction) {
-          case DIRECTIONS.UP:
-            {
-              const updatedSnakeBody = state.snake.map((coords, i, arr) => {
-                // previously right
-                if (
-                  previously(DIRECTIONS.RIGHT) &&
-                  i !== 0 &&
-                  arr[i - 1].x > coords.x
-                ) {
-                  console.log("3", state.previousDirection);
-
-                  return move(DIRECTIONS.RIGHT, coords);
-                }
-
-                //previously left
-                if (
-                  previously(DIRECTIONS.LEFT) &&
-                  i !== 0 &&
-                  arr[i].x > arr[i - 1].x
-                ) {
-                  console.log("4", state.previousDirection);
-
-                  return move(DIRECTIONS.LEFT, coords);
-                }
-
-                return move(DIRECTIONS.UP, coords);
-              });
-
-              setState(state, { snake: updatedSnakeBody });
-            }
-            break;
-          case DIRECTIONS.DOWN:
-            {
-              const updatedSnakeBody = state.snake.map((coords, i, arr) => {
-                if (
-                  previously(DIRECTIONS.LEFT) &&
-                  i !== 0 &&
-                  arr[i].y < arr[i - 1].x - state.size &&
-                  arr[i].x > arr[i - 1].x
-                ) {
-                  console.log("5");
-
-                  return move(DIRECTIONS.LEFT, coords);
-                }
-
-                if (
-                  previously(DIRECTIONS.RIGHT) &&
-                  i !== 0 &&
-                  arr[i].x < arr[i - 1].x
-                ) {
-                  console.log("6");
-
-                  return move(DIRECTIONS.RIGHT, coords);
-                }
-
-                return move(DIRECTIONS.DOWN, coords);
-              });
-
-              setState(state, { snake: updatedSnakeBody });
-            }
-            break;
-        }
-      }
-      break;
-  }
+  const updatedSnakeBody = state.snake.map(getTailCoords);
+  setState(state, { snake: updatedSnakeBody });
 };
 
 const previously = (direction) => state.previousDirection === direction;
+
+const getTailCoords = (coords, i, arr) => {
+  if (previously(DIRECTIONS.UP) && i !== 0 && arr[i - 1].y < arr[i].y) {
+    console.log("1");
+    return move(DIRECTIONS.UP, coords);
+  }
+
+  if (previously(DIRECTIONS.DOWN) && i !== 0 && arr[i].y < arr[i - 1].y) {
+    console.log("1.1");
+    return move(DIRECTIONS.DOWN, coords);
+  }
+
+  if (previously(DIRECTIONS.RIGHT) && i !== 0 && arr[i - 1].x > coords.x) {
+    console.log("3", state.previousDirection);
+
+    return move(DIRECTIONS.RIGHT, coords);
+  }
+
+  if (previously(DIRECTIONS.LEFT) && i !== 0 && arr[i].x > arr[i - 1].x) {
+    console.log("4", state.previousDirection);
+
+    return move(DIRECTIONS.LEFT, coords);
+  }
+
+  return move(state.direction, coords);
+};
 
 const move = (direction, coords) => {
   const oneStep = canvas.width / state.speed;
