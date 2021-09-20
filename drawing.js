@@ -48,32 +48,54 @@ export const updatePosition = () => {
   setState(state, { snake: updatedSnakeBody });
 };
 
-const previously = (direction) => state.previousDirection === direction;
+const getSnakeDirections = () =>
+  state.snake.reduce((acc, { direction }, i) => {
+    if (!acc.length || acc[acc.length - 1].direction !== direction) {
+      acc.push({ direction, idx: i });
+    }
+
+    return acc;
+  }, []);
+
+const previously = (direction, idx) => {
+  const snakeDirections = getSnakeDirections();
+
+  const item = snakeDirections
+    .slice()
+    .reverse()
+    .find((item) => item.idx <= idx);
+
+  return idx !== 0 && item.direction === direction;
+};
 
 const getTailCoords = (coords, i, arr) => {
-  if (previously(DIRECTIONS.UP) && i !== 0 && arr[i - 1].y < arr[i].y) {
-    console.log("1");
-    return move(DIRECTIONS.UP, coords);
+  const { UP, DOWN, LEFT, RIGHT } = DIRECTIONS;
+
+  const snakeDirections = getSnakeDirections();
+
+  if (previously(UP, i) && arr[i - 1].y <= arr[i].y) {
+    return move(UP, coords);
   }
 
-  if (previously(DIRECTIONS.DOWN) && i !== 0 && arr[i].y < arr[i - 1].y) {
-    console.log("1.1");
-    return move(DIRECTIONS.DOWN, coords);
+  if (previously(DOWN, i) && arr[i].y <= arr[i - 1].y) {
+    return move(DOWN, coords);
   }
 
-  if (previously(DIRECTIONS.RIGHT) && i !== 0 && arr[i - 1].x > coords.x) {
-    console.log("3", state.previousDirection);
-
-    return move(DIRECTIONS.RIGHT, coords);
+  if (previously(RIGHT, i) && arr[i - 1].x >= coords.x) {
+    return move(RIGHT, coords);
   }
 
-  if (previously(DIRECTIONS.LEFT) && i !== 0 && arr[i].x > arr[i - 1].x) {
-    console.log("4", state.previousDirection);
-
-    return move(DIRECTIONS.LEFT, coords);
+  if (previously(LEFT, i) && arr[i].x >= arr[i - 1].x) {
+    return move(LEFT, coords);
   }
 
-  return move(state.direction, coords);
+  const getDirectionToFollow = () =>
+    i === 0
+      ? state.direction
+      : snakeDirections[snakeDirections.findIndex((item) => item.idx === i) - 1]
+          .direction;
+
+  return move(getDirectionToFollow(), coords);
 };
 
 const move = (direction, coords) => {
@@ -84,28 +106,28 @@ const move = (direction, coords) => {
       const newXPosition = coords.x - canvas.width / state.speed;
       const x = coords.x < 0 ? canvas.width : newXPosition;
 
-      return { ...coords, x };
+      return { ...coords, x, direction };
     }
 
     case DIRECTIONS.RIGHT: {
       const newXPosition = coords.x + canvas.width / state.speed;
       const x = coords.x >= canvas.width ? 0 : newXPosition;
 
-      return { ...coords, x };
+      return { ...coords, x, direction };
     }
 
     case DIRECTIONS.UP: {
       const newYPosition = coords.y - oneStep;
       const y = coords.y < 0 ? canvas.height : newYPosition;
 
-      return { ...coords, y };
+      return { ...coords, y, direction };
     }
 
     case DIRECTIONS.DOWN: {
       const newYPosition = coords.y + oneStep;
       const y = coords.y >= canvas.height ? 0 : newYPosition;
 
-      return { ...coords, y };
+      return { ...coords, y, direction };
     }
 
     default:

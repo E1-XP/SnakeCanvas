@@ -15,6 +15,7 @@ export const state = {
     {
       x: canvas.width / 2,
       y: canvas.height / 2,
+      direction: DIRECTIONS.RIGHT,
     },
   ],
   size: 20,
@@ -22,8 +23,6 @@ export const state = {
   speed: 3000,
   orientation: ORIENTATION.HORIZONTAL,
   direction: DIRECTIONS.RIGHT,
-  directionChangeCoords: null,
-  previousDirection: DIRECTIONS.UP,
   score: 0,
   fillStyle: "#ccc",
 };
@@ -36,5 +35,4 @@ export const setState = (state = {}, updatedStatePartial) => {
   if (noChanges) return;
 
   Object.assign(state, updatedStatePartial);
-  // console.log("final", state.previousDirection);
 };

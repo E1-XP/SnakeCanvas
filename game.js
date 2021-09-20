@@ -25,37 +25,63 @@ const updateDOMScoreboard = () => {
 
 const getNewSegmentCoords = () => {
   const len = state.snake.length;
+  const direction = state.snake[len - 1].direction;
 
   switch (state.direction) {
-    case "UP": {
+    case DIRECTIONS.UP: {
       const x = state.snake[len - 1].x;
       const y = state.snake[len - 1].y + state.size;
 
-      return { x, y };
+      return { x, y, direction };
     }
 
-    case "DOWN": {
+    case DIRECTIONS.DOWN: {
       const x = state.snake[len - 1].x;
       const y = state.snake[len - 1].y - state.size;
 
-      return { x, y };
+      return { x, y, direction };
     }
 
-    case "LEFT": {
+    case DIRECTIONS.LEFT: {
       const x = state.snake[len - 1].x + state.size;
       const y = state.snake[len - 1].y;
 
-      return { x, y };
+      return { x, y, direction };
     }
 
-    case "RIGHT": {
+    case DIRECTIONS.RIGHT: {
       const x = state.snake[len - 1].x - state.size;
       const y = state.snake[len - 1].y;
 
-      return { x, y };
+      return { x, y, direction };
     }
   }
 };
+
+setState(state, {
+  score: state.score + 1,
+  snake: [...state.snake, getNewSegmentCoords()],
+});
+
+setState(state, {
+  score: state.score + 1,
+  snake: [...state.snake, getNewSegmentCoords()],
+});
+
+setState(state, {
+  score: state.score + 1,
+  snake: [...state.snake, getNewSegmentCoords()],
+});
+
+setState(state, {
+  score: state.score + 1,
+  snake: [...state.snake, getNewSegmentCoords()],
+});
+
+setState(state, {
+  score: state.score + 1,
+  snake: [...state.snake, getNewSegmentCoords()],
+});
 
 export const handleFoodCollision = () => {
   const foodObjectBorders = {
@@ -94,20 +120,15 @@ export const handleFoodCollision = () => {
 
 export const enableSteering = (e) => {
   const genStateUpdate = (direction, orientation) => {
-    const shouldChangePrevDir = direction !== state.direction;
     const dirChangedOnSameAxis =
       orientation === state.orientation && direction !== state.direction;
+
+    if (dirChangedOnSameAxis) return {};
 
     return {
       direction,
       orientation,
-      directionChangeCoords: shouldChangePrevDir
-        ? { ...state.snake[0] }
-        : state.directionChangeCoords,
-      previousDirection: shouldChangePrevDir
-        ? state.direction
-        : state.previousDirection,
-      snake: dirChangedOnSameAxis ? state.snake.slice().reverse() : state.snake,
+      snake: [{ ...state.snake[0], direction }].concat(state.snake.slice(1)),
     };
   };
 
