@@ -27,7 +27,7 @@ const getNewSegmentCoords = () => {
   const len = state.snake.length;
   const direction = state.snake[len - 1].direction;
 
-  switch (state.direction) {
+  switch (direction) {
     case DIRECTIONS.UP: {
       const x = state.snake[len - 1].x;
       const y = state.snake[len - 1].y + state.size;
