@@ -24,6 +24,7 @@ export const state = {
   orientation: ORIENTATION.HORIZONTAL,
   direction: DIRECTIONS.RIGHT,
   score: 0,
+  finished: false,
   fillStyle: "#ccc",
 };
 

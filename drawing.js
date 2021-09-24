@@ -1,5 +1,5 @@
 import { state, setState, ORIENTATION, DIRECTIONS } from "./state";
-import { handleFoodCollision } from "./game";
+import { handleFoodCollision, detectTailCollisions } from "./game";
 
 const drawSnake = (ctx) => {
   let i = 0;
@@ -73,27 +73,29 @@ const getTailCoords = (coords, i, arr) => {
 
   const snakeDirections = getSnakeDirections();
 
-  if (previously(UP, i) && arr[i - 1].y <= arr[i].y) {
+  if (previously(UP, i) && arr[i - 1].y < arr[i].y) {
     return move(UP, coords);
   }
 
-  if (previously(DOWN, i) && arr[i].y <= arr[i - 1].y) {
+  if (previously(DOWN, i) && arr[i].y < arr[i - 1].y) {
     return move(DOWN, coords);
   }
 
-  if (previously(RIGHT, i) && arr[i - 1].x >= coords.x) {
+  if (previously(RIGHT, i) && arr[i - 1].x > coords.x) {
     return move(RIGHT, coords);
   }
 
-  if (previously(LEFT, i) && arr[i].x >= arr[i - 1].x) {
+  if (previously(LEFT, i) && arr[i].x > arr[i - 1].x) {
     return move(LEFT, coords);
   }
 
-  const getDirectionToFollow = () =>
-    i === 0
-      ? state.direction
-      : snakeDirections[snakeDirections.findIndex((item) => item.idx === i) - 1]
-          .direction;
+  const getDirectionToFollow = () => {
+    if (i === 0 || snakeDirections.length === 1) return state.direction;
+
+    return snakeDirections[
+      snakeDirections.findIndex((item) => item.idx === i) - 1
+    ].direction;
+  };
 
   return move(getDirectionToFollow(), coords);
 };
@@ -140,8 +142,9 @@ export const gameLoop = (ctx) => {
     clearCanvas(ctx);
     draw(ctx);
     updatePosition();
+    detectTailCollisions();
     handleFoodCollision();
 
-    gameLoop(ctx);
+    if (!state.finished) gameLoop(ctx);
   });
 };

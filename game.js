@@ -83,6 +83,24 @@ setState(state, {
   snake: [...state.snake, getNewSegmentCoords()],
 });
 
+export const detectTailCollisions = () => {
+  const handler = () => {
+    setState(state, { finished: true });
+    alert("GAME OVER!");
+  };
+
+  state.snake.forEach((item, idx) => {
+    const collisionWithOtherElement = state.snake.some((itm, i) => {
+      const collidedOnXAxis = item.x > itm.x && item.x < itm.x + state.size;
+      const collidedOnYAxis = item.y > itm.y && item.y < itm.y + state.size;
+
+      return Math.abs(idx - i) > 1 && collidedOnXAxis && collidedOnYAxis;
+    });
+
+    if (collisionWithOtherElement) handler();
+  });
+};
+
 export const handleFoodCollision = () => {
   const foodObjectBorders = {
     xStart: state.foodCoords.x,
