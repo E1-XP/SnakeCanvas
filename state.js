@@ -19,8 +19,11 @@ export const state = {
     },
   ],
   size: 20,
+  speed: 500,
+  get oneStep() {
+    return canvas.width / this.speed;
+  },
   foodCoords: { x: 0, y: 0 },
-  speed: 3000,
   orientation: ORIENTATION.HORIZONTAL,
   direction: DIRECTIONS.RIGHT,
   score: 0,

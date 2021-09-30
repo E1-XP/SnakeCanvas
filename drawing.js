@@ -3,27 +3,66 @@ import { handleFoodCollision, detectTailCollisions } from "./game";
 
 const drawSnake = (ctx) => {
   let i = 0;
-  // console.log(state.snake);
 
   while (i < state.snake.length) {
-    // ctx.fillStyle = "#000";
-    // const border = 2;
-
-    // ctx.fillRect(
-    //   state.snake[i].x - border,
-    //   state.snake[i].y - border,
-    //   state.size + border,
-    //   state.size + border
-    // );
-
     ctx.fillStyle = state.fillStyle;
-    // if (!i) ctx.fillStyle = `#eb4034`;
-    // if (i && i === state.snake.length - 1) ctx.fillStyle = "#03A9F4";
-
     ctx.fillRect(state.snake[i].x, state.snake[i].y, state.size, state.size);
 
     i++;
   }
+
+  handleDrawingOnCanvasEdges(ctx);
+};
+
+const handleDrawingOnCanvasEdges = (ctx) => {
+  state.snake.forEach((coords) => {
+    switch (coords.direction) {
+      case DIRECTIONS.RIGHT:
+        {
+          if (coords.x < state.size)
+            ctx.fillRect(
+              coords.x + canvas.width + state.oneStep,
+              coords.y,
+              state.size,
+              state.size
+            );
+        }
+        break;
+      case DIRECTIONS.LEFT:
+        {
+          if (coords.x > canvas.width - state.size)
+            ctx.fillRect(
+              coords.x - canvas.width - state.oneStep,
+              coords.y,
+              state.size,
+              state.size
+            );
+        }
+        break;
+      case DIRECTIONS.UP:
+        {
+          if (coords.y > canvas.height - state.size)
+            ctx.fillRect(
+              coords.x,
+              coords.y - canvas.height - state.oneStep,
+              state.size,
+              state.size
+            );
+        }
+        break;
+      case DIRECTIONS.DOWN:
+        {
+          if (coords.y < state.size)
+            ctx.fillRect(
+              coords.x,
+              coords.y + canvas.height + state.oneStep,
+              state.size,
+              state.size
+            );
+        }
+        break;
+    }
+  });
 };
 
 const drawFood = (ctx) => {
@@ -72,64 +111,105 @@ const getTailCoords = (coords, i, arr) => {
   const { UP, DOWN, LEFT, RIGHT } = DIRECTIONS;
 
   const snakeDirections = getSnakeDirections();
+  const prevElemCoords = arr[i - 1];
 
-  if (previously(UP, i) && arr[i - 1].y < arr[i].y) {
-    return move(UP, coords);
+  if (previously(UP, i) && prevElemCoords.y < coords.y) {
+    return move(UP, coords, prevElemCoords);
   }
 
-  if (previously(DOWN, i) && arr[i].y < arr[i - 1].y) {
-    return move(DOWN, coords);
+  if (previously(DOWN, i) && coords.y < prevElemCoords.y) {
+    return move(DOWN, coords, prevElemCoords);
   }
 
-  if (previously(RIGHT, i) && arr[i - 1].x > coords.x) {
-    return move(RIGHT, coords);
+  if (previously(RIGHT, i) && prevElemCoords.x > coords.x) {
+    return move(RIGHT, coords, prevElemCoords);
   }
 
-  if (previously(LEFT, i) && arr[i].x > arr[i - 1].x) {
-    return move(LEFT, coords);
+  if (previously(LEFT, i) && coords.x > prevElemCoords.x) {
+    return move(LEFT, coords, prevElemCoords);
   }
 
   const getDirectionToFollow = () => {
     if (i === 0 || snakeDirections.length === 1) return state.direction;
 
-    return snakeDirections[
-      snakeDirections.findIndex((item) => item.idx === i) - 1
-    ].direction;
+    const foundIdx = snakeDirections.findIndex((item) => item.idx === i) - 1;
+    const positiveIdx = Math.max(0, foundIdx);
+    const x = snakeDirections[positiveIdx]?.direction;
+
+    // console.log(
+    //   x,
+    //   i,
+    //   state.snake[i]?.direction,
+    //   foundIdx,
+    //   snakeDirections,
+    //   state.snake.map((itm) => itm.direction).join("-")
+    // );
+
+    return x;
   };
 
-  return move(getDirectionToFollow(), coords);
+  return move(getDirectionToFollow(), coords, prevElemCoords);
 };
 
-const move = (direction, coords) => {
-  const oneStep = canvas.width / state.speed;
+const move = (direction, coords, prevElemCoords) => {
+  const sameDirection =
+    prevElemCoords && prevElemCoords.direction === direction;
 
   switch (direction) {
     case DIRECTIONS.LEFT: {
-      const newXPosition = coords.x - canvas.width / state.speed;
-      const x = coords.x < 0 ? canvas.width : newXPosition;
+      const updatedCoords = { ...coords, direction };
 
-      return { ...coords, x, direction };
+      updatedCoords.x = coords.x - state.oneStep;
+
+      if (sameDirection) {
+        updatedCoords.x = prevElemCoords.x + state.size - state.oneStep;
+        updatedCoords.y = prevElemCoords.y;
+      }
+      if (coords.x < 0) updatedCoords.x = canvas.width;
+
+      return updatedCoords;
     }
 
     case DIRECTIONS.RIGHT: {
-      const newXPosition = coords.x + canvas.width / state.speed;
-      const x = coords.x >= canvas.width ? 0 : newXPosition;
+      const updatedCoords = { ...coords, direction };
 
-      return { ...coords, x, direction };
+      updatedCoords.x = coords.x + state.oneStep;
+
+      if (sameDirection) {
+        updatedCoords.x = prevElemCoords.x - state.size + state.oneStep;
+        updatedCoords.y = prevElemCoords.y;
+      }
+      if (coords.x >= canvas.width) updatedCoords.x = 0;
+
+      return updatedCoords;
     }
 
     case DIRECTIONS.UP: {
-      const newYPosition = coords.y - oneStep;
-      const y = coords.y < 0 ? canvas.height : newYPosition;
+      const updatedCoords = { ...coords, direction };
 
-      return { ...coords, y, direction };
+      updatedCoords.y = coords.y - state.oneStep;
+
+      if (sameDirection) {
+        updatedCoords.y = prevElemCoords.y + state.size - state.oneStep;
+        updatedCoords.x = prevElemCoords.x;
+      }
+      if (coords.y < 0) updatedCoords.y = canvas.height;
+
+      return updatedCoords;
     }
 
     case DIRECTIONS.DOWN: {
-      const newYPosition = coords.y + oneStep;
-      const y = coords.y >= canvas.height ? 0 : newYPosition;
+      const updatedCoords = { ...coords, direction };
 
-      return { ...coords, y, direction };
+      updatedCoords.y = coords.y + state.oneStep;
+
+      if (sameDirection) {
+        updatedCoords.y = prevElemCoords.y - state.size + state.oneStep;
+        updatedCoords.x = prevElemCoords.x;
+      }
+      if (coords.y >= canvas.height) updatedCoords.y = 0;
+
+      return updatedCoords;
     }
 
     default:
@@ -139,9 +219,9 @@ const move = (direction, coords) => {
 
 export const gameLoop = (ctx) => {
   requestAnimationFrame(() => {
+    updatePosition();
     clearCanvas(ctx);
     draw(ctx);
-    updatePosition();
     detectTailCollisions();
     handleFoodCollision();
 
