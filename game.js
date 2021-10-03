@@ -8,8 +8,8 @@ const KEYS = {
 };
 
 export const calcRandomFoodPlace = () => {
-  const x = state.snake[0].x + state.size * 2; //Math.random() * (canvas.width - state.size);
-  const y = state.snake[0].y + state.size * 2; //Math.random() * (canvas.height - state.size);
+  const x = Math.random() * (canvas.width - state.size);
+  const y = Math.random() * (canvas.height - state.size);
 
   return { x, y };
 };
@@ -57,31 +57,6 @@ const getNewSegmentCoords = () => {
     }
   }
 };
-
-setState(state, {
-  score: state.score + 1,
-  snake: [...state.snake, getNewSegmentCoords()],
-});
-
-setState(state, {
-  score: state.score + 1,
-  snake: [...state.snake, getNewSegmentCoords()],
-});
-
-setState(state, {
-  score: state.score + 1,
-  snake: [...state.snake, getNewSegmentCoords()],
-});
-
-setState(state, {
-  score: state.score + 1,
-  snake: [...state.snake, getNewSegmentCoords()],
-});
-
-setState(state, {
-  score: state.score + 1,
-  snake: [...state.snake, getNewSegmentCoords()],
-});
 
 export const detectTailCollisions = () => {
   const handler = () => {
@@ -141,7 +116,21 @@ export const enableSteering = (e) => {
     const dirChangedOnSameAxis =
       orientation === state.orientation && direction !== state.direction;
 
-    if (dirChangedOnSameAxis) return {};
+    const rotatedEnoughToChangeDirection = () => {
+      if (state.snake.length <= 1) return true;
+
+      if (
+        (state.orientation === ORIENTATION.HORIZONTAL &&
+          state.snake[0].y === state.snake[1].y) ||
+        (state.orientation === ORIENTATION.VERTICAL &&
+          state.snake[0].x === state.snake[1].x)
+      )
+        return true;
+
+      return false;
+    };
+
+    if (dirChangedOnSameAxis || !rotatedEnoughToChangeDirection()) return {};
 
     return {
       direction,

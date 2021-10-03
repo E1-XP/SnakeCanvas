@@ -7,26 +7,26 @@ const drawSnake = (ctx) => {
   while (i < state.snake.length) {
     ctx.fillStyle = state.fillStyle;
     ctx.fillRect(state.snake[i].x, state.snake[i].y, state.size, state.size);
-    // ctx.fillStyle = "#dc2f02";
+
     handleDrawingOnCanvasEdges(ctx, state.snake[i]);
 
     i++;
   }
+
+  fillSpaceBetweenElementsOnDirectionChange(ctx);
 };
 
 const handleDrawingOnCanvasEdges = (ctx, coords) => {
   switch (coords.direction) {
     case DIRECTIONS.LEFT:
       {
-        if (coords.x > canvas.width - state.size) {
-          console.log("works");
+        if (coords.x > canvas.width - state.size)
           ctx.fillRect(
             coords.x - canvas.width,
             coords.y,
             state.size,
             state.size
           );
-        }
       }
       break;
     case DIRECTIONS.RIGHT:
@@ -65,8 +65,28 @@ const handleDrawingOnCanvasEdges = (ctx, coords) => {
   }
 };
 
-const fillSpaceBetweenElementsOnDirectionChange = () => {
-  // TODO
+const fillSpaceBetweenElementsOnDirectionChange = (ctx) => {
+  const snakeDirections = getSnakeDirections().slice(1);
+
+  snakeDirections.map((item) => {
+    const coords = state.snake[item.idx - 1];
+    const currCoords = state.snake[item.idx];
+
+    switch (coords.direction) {
+      case DIRECTIONS.UP:
+        ctx.fillRect(coords.x, currCoords.y, state.size, state.size);
+        break;
+      case DIRECTIONS.DOWN:
+        ctx.fillRect(coords.x, currCoords.y, state.size, state.size);
+        break;
+      case DIRECTIONS.LEFT:
+        ctx.fillRect(currCoords.x, coords.y, state.size, state.size);
+        break;
+      case DIRECTIONS.RIGHT:
+        ctx.fillRect(currCoords.x, coords.y, state.size, state.size);
+        break;
+    }
+  });
 };
 
 const drawFood = (ctx) => {
@@ -140,15 +160,6 @@ const getTailCoords = (coords, i, arr) => {
     const positiveIdx = Math.max(0, foundIdx);
     const direction = snakeDirections[positiveIdx]?.direction;
 
-    console.log(
-      direction,
-      i,
-      state.snake[i]?.direction,
-      foundIdx,
-      snakeDirections,
-      state.snake.map((itm) => itm.direction).join("-")
-    );
-
     return direction;
   };
 
@@ -189,8 +200,7 @@ const move = (direction, coords, prevElemCoords) => {
         idealCoords.x = prevElemCoords.x + state.size - state.oneStep;
         idealCoords.y = prevElemCoords.y;
 
-        if (updatedCoords.x > state.oneStep)
-          removeUnneccessarySpaceBetweenElements(idealCoords, updatedCoords);
+        removeUnneccessarySpaceBetweenElements(idealCoords, updatedCoords);
       }
       if (updatedCoords.x < 0) updatedCoords.x = canvas.width;
 
@@ -207,8 +217,7 @@ const move = (direction, coords, prevElemCoords) => {
         idealCoords.x = prevElemCoords.x - state.size + state.oneStep;
         idealCoords.y = prevElemCoords.y;
 
-        if (updatedCoords.x < canvas.width - state.oneStep)
-          removeUnneccessarySpaceBetweenElements(idealCoords, updatedCoords);
+        removeUnneccessarySpaceBetweenElements(idealCoords, updatedCoords);
       }
       if (updatedCoords.x >= canvas.width) updatedCoords.x = 0;
 
@@ -225,7 +234,6 @@ const move = (direction, coords, prevElemCoords) => {
         idealCoords.y = prevElemCoords.y + state.size - state.oneStep;
         idealCoords.x = prevElemCoords.x;
 
-        // if (updatedCoords.x < canvas.width - state.size)
         removeUnneccessarySpaceBetweenElements(idealCoords, updatedCoords);
       }
       if (updatedCoords.y < 0) updatedCoords.y = canvas.height;
@@ -243,7 +251,6 @@ const move = (direction, coords, prevElemCoords) => {
         idealCoords.y = prevElemCoords.y - state.size + state.oneStep;
         idealCoords.x = prevElemCoords.x;
 
-        // if (updatedCoords.x < canvas.width - state.size)
         removeUnneccessarySpaceBetweenElements(idealCoords, updatedCoords);
       }
       if (updatedCoords.y >= canvas.height) updatedCoords.y = 0;
