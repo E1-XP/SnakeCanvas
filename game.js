@@ -94,7 +94,7 @@ export const detectTailCollisions = () => {
       const collidedOnXAxis = item.x > itm.x && item.x < itm.x + state.size;
       const collidedOnYAxis = item.y > itm.y && item.y < itm.y + state.size;
 
-      return Math.abs(idx - i) > 1 && collidedOnXAxis && collidedOnYAxis;
+      return Math.abs(idx - i) > 2 && collidedOnXAxis && collidedOnYAxis;
     });
 
     if (collisionWithOtherElement) handler();

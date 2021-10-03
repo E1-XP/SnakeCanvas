@@ -19,7 +19,7 @@ export const state = {
     },
   ],
   size: 20,
-  speed: 500,
+  speed: 1000,
   get oneStep() {
     return canvas.width / this.speed;
   },
@@ -35,7 +35,6 @@ export const setState = (state = {}, updatedStatePartial) => {
   const noChanges = Object.keys(updatedStatePartial).every(
     (key) => updatedStatePartial[key] === state[key]
   );
-
   if (noChanges) return;
 
   Object.assign(state, updatedStatePartial);
