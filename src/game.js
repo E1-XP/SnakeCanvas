@@ -1,4 +1,4 @@
-import { DIRECTIONS, ORIENTATION, setState, state } from "../state";
+import { DIRECTIONS, ORIENTATION, setState, state } from "./state";
 
 const KEYS = {
   LEFT: 37,

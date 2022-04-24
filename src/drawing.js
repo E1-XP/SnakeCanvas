@@ -1,4 +1,4 @@
-import { state, setState, ORIENTATION, DIRECTIONS } from "../state";
+import { state, setState, ORIENTATION, DIRECTIONS } from "./state";
 import { handleFoodCollision, detectTailCollisions } from "./game";
 
 const drawSnake = (ctx) => {
