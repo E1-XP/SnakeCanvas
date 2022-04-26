@@ -7,14 +7,14 @@ beerImg.onload = function () {
   isLoaded = true;
 };
 
-beerImg.src = "./../public/assets/beer.gif";
+beerImg.src = "./assets/beer.gif";
 
 const whatIsThis = new Image();
 let isThisLoaded = false;
 whatIsThis.onload = function () {
   isThisLoaded = true;
 };
-whatIsThis.src = "./../public/assets/what.gif";
+whatIsThis.src = "./assets/what.gif";
 
 const drawSnake = (ctx) => {
   let i = 0;
