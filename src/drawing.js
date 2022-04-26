@@ -83,7 +83,7 @@ const handleDrawingOnCanvasEdges = (ctx, coords) => {
         if (coords.y < state.size)
           ctx.drawImage(
             whatIsThis,
-            (coords.x = state.oneStep,
+            coords.x,
             coords.y + canvas.height + state.oneStep,
             state.size,
             state.size
