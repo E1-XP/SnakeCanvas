@@ -18,8 +18,8 @@ export const state = {
       direction: DIRECTIONS.RIGHT,
     },
   ],
-  size: 20,
-  speed: 500,
+  size: 60,
+  speed: 300,
   get oneStep() {
     return canvas.width / this.speed;
   },
@@ -30,6 +30,34 @@ export const state = {
   finished: false,
   fillStyle: "#ccc",
 };
+
+export const jokes = [
+  "To czas na bajerę!",
+  "Krzysiek, gulnij sobie!",
+  "Uwaga nadciąga Zenek!",
+  "Aśkaaaaaaaaa!",
+  "Panie Maaarek, Panie Maaarek!",
+  "Bastek, dajesz rady?",
+  "Szkiełko, jak tam koty?",
+  "Ja to bym podziubał, ale Princess!",
+  "Padajmy wszyscy na kolana bo księżniczka idzie!",
+  "Ciekawe co robi Michaś?",
+  "Masz tam jakieś paczki?",
+  "Horacy, wypierdalaj na serwis!",
+  "Jak to co, dobre wrażenie!",
+  "Nie będę pił, obiecałem Horacemu.",
+  "Naaa spoookojnieeeee!",
+  "A ja wybieram Princess!!",
+  "Oho, idzie buuuchaaaj!",
+  "Ciekawe co tam u Freda?",
+  "Ciekawe czy składak pojedzie z nami",
+  "Fajny rower na tym olx'ie, ale części nie ma do niego.",
+  "Adam, awariaaa!!!",
+  "Znowu odkurzanie... Od tego jest firma sprzątająca!",
+  "Znowu ten Bernardzik dzwoni...",
+  "Trinken, pausen, ficken machen!",
+  "I cyk godzinki do zeszytu, będzie na Niemcy!",
+];
 
 export const setState = (state = {}, updatedStatePartial) => {
   const noChanges = Object.keys(updatedStatePartial).every(

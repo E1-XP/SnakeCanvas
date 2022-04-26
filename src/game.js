@@ -1,4 +1,4 @@
-import { DIRECTIONS, ORIENTATION, setState, state } from "./state";
+import { DIRECTIONS, ORIENTATION, setState, state, jokes } from "./state";
 
 const KEYS = {
   LEFT: 37,
@@ -21,6 +21,8 @@ export const initializeStateWithRandomFoodPos = () => {
 const updateDOMScoreboard = () => {
   const element = document.getElementById("score");
   element.innerHTML = `${state.score}`;
+  document.querySelector(".heading").innerHTML =
+    jokes[Math.floor(Math.random() * jokes.length)];
 };
 
 const getNewSegmentCoords = () => {
