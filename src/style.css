@@ -7,6 +7,12 @@ sans-serif;
   background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='100%25' width='100%25'%3E%3Cdefs%3E%3Cpattern id='doodad' width='46' height='46' viewBox='0 0 40 40' patternUnits='userSpaceOnUse' patternTransform='rotate(135)'%3E%3Crect width='100%25' height='100%25' fill='rgba(56, 161, 105,1)'/%3E%3Ccircle cx='-15' cy='15' r='1.5' fill='rgba(155, 44, 44,1)'/%3E%3Ccircle cx='-5' cy='25' r='1.5' fill='rgba(155, 44, 44,1)'/%3E%3Ccircle cx='5' cy='15' r='1.5' fill='rgba(155, 44, 44,1)'/%3E%3Ccircle cx='25' cy='15' r='1.5' fill='rgba(155, 44, 44,1)'/%3E%3Ccircle cx='15' cy='25' r='1.5' fill='rgba(155, 44, 44,1)'/%3E%3Ccircle cx='35' cy='25' r='1.5' fill='rgba(155, 44, 44,1)'/%3E%3Ccircle cx='15' cy='15' r='1' fill='rgba(236, 201, 75,1)'/%3E%3Ccircle cx='35' cy='15' r='1' fill='rgba(236, 201, 75,1)'/%3E%3Ccircle cx='5' cy='25' r='1' fill='rgba(236, 201, 75,1)'/%3E%3Ccircle cx='25' cy='25' r='1' fill='rgba(236, 201, 75,1)'/%3E%3C/pattern%3E%3C/defs%3E%3Crect fill='url(%23doodad)' height='200%25' width='200%25'/%3E%3C/svg%3E ")
 }
 
+@media only screen and (max-width: 900px) {
+  .heading {
+    font-size: 1.5rem;
+  }
+}
+
 .wrapper {
   max-width: 110vh;
   margin: 0 auto;
@@ -21,12 +27,13 @@ sans-serif;
 }
 
 .image {
-height: 6rem;
+  height: 6rem;
 }
 
 .heading {
   text-align: center;
-  padding: 1.5rem;
+  padding: 0 1.5rem;
+  font-size: 2.5rem;
 }
 
 canvas {
