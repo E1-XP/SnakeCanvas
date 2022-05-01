@@ -21,7 +21,8 @@ export const initializeStateWithRandomFoodPos = () => {
 const updateDOMScoreboard = () => {
   const element = document.getElementById("score");
   element.innerHTML = `${state.score}`;
-  document.querySelector(".heading").innerHTML =
+
+  document.getElementById("heading").innerHTML =
     jokes[Math.floor(Math.random() * jokes.length)];
 };
 
