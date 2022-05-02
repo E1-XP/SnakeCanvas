@@ -27,6 +27,6 @@ module.exports = {
     }),
   ],
   devServer: {
-    contentBase: "./",
+    contentBase: "./public",
   },
 };
