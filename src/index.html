@@ -10,18 +10,37 @@
       href="https://fonts.googleapis.com/css2?family=Acme&display=swap"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://fonts.sandbox.google.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0"
+    />
   </head>
   <body>
     <div class="wrapper">
       <header class="header">
         <img class="image" src="./assets/what.gif" alt="weirdo" />
-        <h1 id="heading" class="heading">Let's Dudys!</h1>
+        <h1 id="heading" class="heading">Please type your name:</h1>
         <img class="image" src="./assets/what.gif" alt="weirdo" />
       </header>
-      <canvas id="canvas" width="1280" height="720"></canvas>
-      <div class="scoreboard">
-        <p class="scoreboard__value" id="score">0</p>
-      </div>
+      <main class="main">
+        <form id="form" class="form">
+          <input
+            type="text"
+            class="form__input"
+            id="user-input"
+            required="required"
+          />
+          <button class="form__button" id="form-btn">
+            <span class="material-symbols-outlined"> arrow_circle_right </span>
+          </button>
+        </form>
+        <section id="game-container" class="game visually-hidden">
+          <canvas id="canvas" class="game__canvas" width="1280" height="720"></canvas>
+          <div class="scoreboard">
+            <p class="scoreboard__value" id="score">0</p>
+          </div>
+        </section>
+      </main>
     </div>
   </body>
 </html>

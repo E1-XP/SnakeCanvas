@@ -1,4 +1,5 @@
 import { DIRECTIONS, ORIENTATION, setState, state, jokes } from "./state";
+import { showEndOfGameView } from "./ui";
 
 const KEYS = {
   LEFT: 37,
@@ -61,12 +62,12 @@ const getNewSegmentCoords = () => {
   }
 };
 
-export const detectTailCollisions = () => {
-  const handler = () => {
-    setState(state, { finished: true });
-    alert("GAME OVER!");
-  };
+const handleEndOfGame = () => {
+  setState(state, { isRunning: false });
+  showEndOfGameView();
+};
 
+export const detectTailCollisions = () => {
   state.snake.forEach((item, idx) => {
     const collisionWithOtherElement = state.snake.some((itm, i) => {
       const collidedOnXAxis = item.x > itm.x && item.x < itm.x + state.size;
@@ -75,7 +76,7 @@ export const detectTailCollisions = () => {
       return Math.abs(idx - i) > 2 && collidedOnXAxis && collidedOnYAxis;
     });
 
-    if (collisionWithOtherElement) handler();
+    if (collisionWithOtherElement) handleEndOfGame();
   });
 };
 

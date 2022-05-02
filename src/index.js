@@ -1,7 +1,8 @@
 import "./style.css";
 
 import { gameLoop } from "./drawing";
-import { enableSteering, initializeStateWithRandomFoodPos } from "./game";
+import {  initializeStateWithRandomFoodPos } from "./game";
+import { setupListeners} from './ui';
 
 const main = (() => {
   const canvas = document.getElementById("canvas");
@@ -10,5 +11,5 @@ const main = (() => {
   initializeStateWithRandomFoodPos();
   gameLoop(ctx);
 
-  document.addEventListener("keydown", enableSteering);
+  setupListeners();
 })();

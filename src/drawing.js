@@ -300,12 +300,14 @@ const move = (direction, coords, prevElemCoords) => {
 
 export const gameLoop = (ctx) => {
   requestAnimationFrame(() => {
-    updatePosition();
-    clearCanvas(ctx);
-    draw(ctx);
-    detectTailCollisions();
-    handleFoodCollision();
-
-    if (!state.finished) gameLoop(ctx);
+    if (state.isRunning) {
+      updatePosition();
+      clearCanvas(ctx);
+      draw(ctx);
+      detectTailCollisions();
+      handleFoodCollision();
+    }
+    
+     gameLoop(ctx);
   });
 };
