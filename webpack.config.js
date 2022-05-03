@@ -27,6 +27,6 @@ module.exports = {
     }),
   ],
   devServer: {
-    contentBase: "./public",
+    static: "./public",
   },
 };

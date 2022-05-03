@@ -1,6 +1,8 @@
 import "../node_modules/normalize.css/normalize.css";
 import "./style.css";
 
+import './db';
+
 import { gameLoop } from "./drawing";
 import {  initializeStateWithRandomFoodPos } from "./game";
 import { setupListeners} from './ui';

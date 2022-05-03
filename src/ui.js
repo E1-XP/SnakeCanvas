@@ -1,3 +1,12 @@
+import {
+  getFirestore,
+  getDocs,
+  collection,
+  query,
+  addDoc,
+} from "firebase/firestore";
+import { app } from "./db";
+
 import { enableSteering } from "./game";
 import { setState, state } from "./state";
 
@@ -8,6 +17,7 @@ const userInput = document.getElementById("user-input");
 const gameContainer = document.getElementById("game-container");
 const canvas = document.getElementById("canvas");
 const resultsContainer = document.getElementById("results");
+const resultsList = resultsContainer.querySelector(".results__list");
 
 const VISUALLY_HIDDEN_CSS = "visually-hidden";
 const OPAQUE_CSS = "opaque";
@@ -32,11 +42,39 @@ const handleFormSubmit = (e) => {
   setState(state, { isRunning: true, user: userName });
 };
 
-export const showEndOfGameView = () => {
+export const showEndOfGameView = async () => {
   heading.textContent = `Game Over! Your score: ${state.score}`;
 
   gameContainer.classList.add(OPAQUE_CSS);
   heading.classList.add(ON_TOP_CSS);
   resultsContainer.classList.remove(VISUALLY_HIDDEN_CSS);
   resultsContainer.classList.add(ON_TOP_CENTERED_CSS);
+
+  try {
+    const db = getFirestore(app);
+    const scoresRef = collection(db, "scores");
+
+    await addDoc(collection(db, "scores"), {
+      name: state.user,
+      score: state.score,
+    });
+
+    const response = await getDocs(query(scoresRef));
+    const data = response.docs
+      .map((v) => ({
+        name: v.get("name"),
+        score: v.get("score"),
+      }))
+      .sort((a, b) => b.score - a.score);
+
+    data.map((v) => {
+      const item = document.createElement("li");
+
+      item.classList.add("list__item");
+      item.innerHTML = `${v.name} - ${v.score}`;
+      resultsList.appendChild(item);
+    });
+  } catch (err) {
+    console.log(err);
+  }
 };
