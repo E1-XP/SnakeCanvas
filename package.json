@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "normalize.css": "^8.0.1",
     "webpack": "^5.21.1",
     "webpack-dev-server": "^3.11.2"
   },
