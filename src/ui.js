@@ -4,6 +4,8 @@ import {
   collection,
   query,
   addDoc,
+  orderBy,
+  limit,
 } from "firebase/firestore";
 import { app } from "./db";
 
@@ -59,7 +61,10 @@ export const showEndOfGameView = async () => {
       score: state.score,
     });
 
-    const response = await getDocs(query(scoresRef));
+    const response = await getDocs(
+      query(scoresRef, orderBy("score", "desc"), limit(10))
+    );
+
     const data = response.docs
       .map((v) => ({
         name: v.get("name"),
@@ -67,14 +72,14 @@ export const showEndOfGameView = async () => {
       }))
       .sort((a, b) => b.score - a.score);
 
-    data.map((v) => {
+    data.map((v, i) => {
       const item = document.createElement("li");
 
       item.classList.add("list__item");
-      item.innerHTML = `${v.name} - ${v.score}`;
+      item.innerHTML = `${i + 1} ${v.name} - ${v.score}`;
       resultsList.appendChild(item);
     });
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
