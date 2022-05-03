@@ -20,20 +20,16 @@ const drawSnake = (ctx) => {
   let i = 0;
 
   while (i < state.snake.length) {
-    // ctx.fillStyle = state.fillStyle;
-    // ctx.fillRect(state.snake[i].x, state.snake[i].y, state.size, state.size);
+    ctx.drawImage(
+      whatIsThis,
+      state.snake[i].x,
+      state.snake[i].y,
+      state.size,
+      state.size
+    );
 
-    if (isThisLoaded) {
-      ctx.drawImage(
-        whatIsThis,
-        state.snake[i].x - 15,
-        state.snake[i].y - 15,
-        state.size,
-        state.size
-      );
+    handleDrawingOnCanvasEdges(ctx, state.snake[i]);
 
-      handleDrawingOnCanvasEdges(ctx, state.snake[i]);
-    }
     i++;
   }
 
@@ -44,7 +40,7 @@ const handleDrawingOnCanvasEdges = (ctx, coords) => {
   switch (coords.direction) {
     case DIRECTIONS.LEFT:
       {
-        if (coords.x > canvas.width - state.size)
+        if (coords.x > canvas.width - state.size) {
           ctx.drawImage(
             whatIsThis,
             coords.x - canvas.width,
@@ -52,35 +48,38 @@ const handleDrawingOnCanvasEdges = (ctx, coords) => {
             state.size,
             state.size
           );
+        }
       }
       break;
     case DIRECTIONS.RIGHT:
       {
-        if (coords.x < state.size)
+        if (coords.x < state.size) {
           ctx.drawImage(
             whatIsThis,
-            coords.x + canvas.width - state.oneStep,
-            coords.y - state.oneStep * 4,
+            coords.x + canvas.width,
+            coords.y,
             state.size,
             state.size
           );
+        }
       }
       break;
     case DIRECTIONS.UP:
       {
-        if (coords.y > canvas.height - state.size)
+        if (coords.y > canvas.height - state.size) {
           ctx.drawImage(
             whatIsThis,
-            coords.x - state.oneStep * 4,
-            coords.y - canvas.height - state.oneStep,
+            coords.x,
+            coords.y - canvas.height,
             state.size,
             state.size
           );
+        }
       }
       break;
     case DIRECTIONS.DOWN:
       {
-        if (coords.y < state.size)
+        if (coords.y < state.size) {
           ctx.drawImage(
             whatIsThis,
             coords.x,
@@ -88,6 +87,7 @@ const handleDrawingOnCanvasEdges = (ctx, coords) => {
             state.size,
             state.size
           );
+        }
       }
       break;
   }
@@ -307,7 +307,7 @@ export const gameLoop = (ctx) => {
       detectTailCollisions();
       handleFoodCollision();
     }
-    
-     gameLoop(ctx);
+
+    gameLoop(ctx);
   });
 };

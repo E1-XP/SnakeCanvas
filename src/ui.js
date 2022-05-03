@@ -20,6 +20,7 @@ const gameContainer = document.getElementById("game-container");
 const canvas = document.getElementById("canvas");
 const resultsContainer = document.getElementById("results");
 const resultsList = resultsContainer.querySelector(".results__list");
+const spinner = document.getElementById("spinner");
 
 const VISUALLY_HIDDEN_CSS = "visually-hidden";
 const OPAQUE_CSS = "opaque";
@@ -72,11 +73,13 @@ export const showEndOfGameView = async () => {
       }))
       .sort((a, b) => b.score - a.score);
 
+    spinner.classList.add(VISUALLY_HIDDEN_CSS);
+
     data.map((v, i) => {
       const item = document.createElement("li");
 
-      item.classList.add("list__item");
-      item.innerHTML = `${i + 1} ${v.name} - ${v.score}`;
+      item.classList.add("results__item");
+      item.innerHTML = `${i + 1}. ${v.name} - ${v.score}`;
       resultsList.appendChild(item);
     });
   } catch (err) {
