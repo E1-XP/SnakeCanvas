@@ -9,7 +9,7 @@ import {
 } from "firebase/firestore";
 import { app } from "./db";
 
-import { enableSteering } from "./game";
+import { enableSteering, restartGame } from "./game";
 import { setState, state } from "./state";
 
 const heading = document.getElementById("heading");
@@ -21,15 +21,18 @@ const canvas = document.getElementById("canvas");
 const resultsContainer = document.getElementById("results");
 const resultsList = resultsContainer.querySelector(".results__list");
 const spinner = document.getElementById("spinner");
+const restartBtn = document.getElementById("restart-button");
 
 const VISUALLY_HIDDEN_CSS = "visually-hidden";
 const OPAQUE_CSS = "opaque";
 const ON_TOP_CSS = "on-top";
-const ON_TOP_CENTERED_CSS = "on-top-centered";
+const ON_TOP_FULL_SCREEN_CSS = "on-top-full-screen";
 
 export const setupListeners = () => {
+  window.addEventListener("keydown", preventPageScroll);
   document.addEventListener("keydown", enableSteering);
   formBtn.addEventListener("click", handleFormSubmit);
+  restartBtn.addEventListener("click", restartGame);
 };
 
 const handleFormSubmit = (e) => {
@@ -48,10 +51,10 @@ const handleFormSubmit = (e) => {
 export const showEndOfGameView = async () => {
   heading.textContent = `Game Over! Your score: ${state.score}`;
 
-  gameContainer.classList.add(OPAQUE_CSS);
+  resultsContainer.classList.add(OPAQUE_CSS);
   heading.classList.add(ON_TOP_CSS);
   resultsContainer.classList.remove(VISUALLY_HIDDEN_CSS);
-  resultsContainer.classList.add(ON_TOP_CENTERED_CSS);
+  resultsContainer.classList.add(ON_TOP_FULL_SCREEN_CSS);
 
   try {
     const db = getFirestore(app);
@@ -63,7 +66,7 @@ export const showEndOfGameView = async () => {
     });
 
     const response = await getDocs(
-      query(scoresRef, orderBy("score", "desc"), limit(10))
+      query(scoresRef, orderBy("score", "desc"), limit(8))
     );
 
     const data = response.docs
@@ -74,6 +77,7 @@ export const showEndOfGameView = async () => {
       .sort((a, b) => b.score - a.score);
 
     spinner.classList.add(VISUALLY_HIDDEN_CSS);
+    restartBtn.classList.remove(VISUALLY_HIDDEN_CSS);
 
     data.map((v, i) => {
       const item = document.createElement("li");
@@ -84,5 +88,25 @@ export const showEndOfGameView = async () => {
     });
   } catch (err) {
     console.error(err);
+  }
+};
+
+export const restartUI = () => {
+  heading.textContent = `Let's Dudys`;
+
+  resultsContainer.classList.remove(OPAQUE_CSS);
+  heading.classList.remove(ON_TOP_CSS);
+  resultsContainer.classList.add(VISUALLY_HIDDEN_CSS);
+  resultsContainer.classList.remove(ON_TOP_FULL_SCREEN_CSS);
+
+  restartBtn.classList.add(VISUALLY_HIDDEN_CSS);
+  resultsList.innerHTML = "";
+};
+
+const preventPageScroll = (e) => {
+  const keys = ["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
+
+  if (keys.indexOf(e.code) > -1) {
+    e.preventDefault();
   }
 };

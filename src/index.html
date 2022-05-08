@@ -35,18 +35,24 @@
           </button>
         </form>
         <section id="game-container" class="game visually-hidden">
-          <canvas id="canvas" class="game__canvas" width="1280" height="720"></canvas>
+          <canvas
+            id="canvas"
+            class="game__canvas"
+            width="1280"
+            height="720"
+          ></canvas>
           <div class="scoreboard">
             <p class="scoreboard__value" id="score">0</p>
           </div>
         </section>
         <section id="results" class="results visually-hidden">
-          <h2 class="results__heading">
-            High scores:
-          </h2>
+          <h2 class="results__heading">High scores:</h2>
           <div class="spinner" id="spinner"></div>
-          <ul class="results__list">
-          </ul>
+          <ul class="results__list"></ul>
+          <button id="restart-button" class="results__button visually-hidden">
+            Play again?
+            <span class="material-symbols-outlined"> restart_alt </span>
+          </button>
         </section>
       </main>
     </div>

@@ -1,5 +1,5 @@
 import { DIRECTIONS, ORIENTATION, setState, state, jokes } from "./state";
-import { showEndOfGameView } from "./ui";
+import { restartUI, showEndOfGameView } from "./ui";
 
 const KEYS = {
   LEFT: 37,
@@ -172,4 +172,24 @@ export const enableSteering = (e) => {
       }
       break;
   }
+};
+
+export const restartGame = () => {
+  setState(state, {
+    score: 0,
+    isRunning: true,
+    snake: [
+      {
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        direction: DIRECTIONS.RIGHT,
+      },
+    ],
+    foodCoords: calcRandomFoodPlace(),
+    orientation: ORIENTATION.HORIZONTAL,
+    direction: DIRECTIONS.RIGHT,
+    user: "",
+  });
+
+  restartUI();
 };
