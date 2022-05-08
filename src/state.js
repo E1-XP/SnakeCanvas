@@ -20,6 +20,7 @@ export const state = {
   ],
   size: 60,
   speed: 300,
+  canvasDimensions: { width: 1280, height: 720 },
   get oneStep() {
     return canvas.width / this.speed;
   },

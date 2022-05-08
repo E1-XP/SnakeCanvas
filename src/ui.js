@@ -7,6 +7,8 @@ import {
   orderBy,
   limit,
 } from "firebase/firestore";
+import debounce from "lodash.debounce";
+
 import { app } from "./db";
 
 import { enableSteering, restartGame } from "./game";
@@ -20,15 +22,25 @@ const gameContainer = document.getElementById("game-container");
 const canvas = document.getElementById("canvas");
 const resultsContainer = document.getElementById("results");
 const resultsList = resultsContainer.querySelector(".results__list");
+const scoreBoard = document.getElementById("score");
 const spinner = document.getElementById("spinner");
 const restartBtn = document.getElementById("restart-button");
+const headerImages = document.getElementsByClassName("header__image");
+
+const CANVAS_WIDTH = 1280;
+const CANVAS_WIDTH_MOBILE = 900;
+const CANVAS_HEIGHT = 720;
+const CANVAS_HEIGHT_MOBILE = 1100;
 
 const VISUALLY_HIDDEN_CSS = "visually-hidden";
+const HIDDEN_CSS = "hidden";
 const OPAQUE_CSS = "opaque";
 const ON_TOP_CSS = "on-top";
 const ON_TOP_FULL_SCREEN_CSS = "on-top-full-screen";
 
 export const setupListeners = () => {
+  window.addEventListener("resize", debounce(setCanvasDimensions, 50));
+
   window.addEventListener("keydown", preventPageScroll);
   document.addEventListener("keydown", enableSteering);
   formBtn.addEventListener("click", handleFormSubmit);
@@ -43,17 +55,20 @@ const handleFormSubmit = (e) => {
 
   form.classList.add(VISUALLY_HIDDEN_CSS);
   gameContainer.classList.remove(VISUALLY_HIDDEN_CSS);
-  heading.textContent = `Let's Dudys!`;
+  [...headerImages].forEach((item) =>
+    item.classList.remove(VISUALLY_HIDDEN_CSS)
+  );
 
+  updateHeading(`Let's Dudys!`);
   setState(state, { isRunning: true, user: userName });
 };
 
 export const showEndOfGameView = async () => {
-  heading.textContent = `Game Over! Your score: ${state.score}`;
+  updateHeading(`Game Over! Your score: ${state.score}`);
 
   resultsContainer.classList.add(OPAQUE_CSS);
   heading.classList.add(ON_TOP_CSS);
-  resultsContainer.classList.remove(VISUALLY_HIDDEN_CSS);
+  resultsContainer.classList.remove(HIDDEN_CSS);
   resultsContainer.classList.add(ON_TOP_FULL_SCREEN_CSS);
 
   try {
@@ -91,13 +106,22 @@ export const showEndOfGameView = async () => {
   }
 };
 
-export const restartUI = () => {
-  heading.textContent = `Let's Dudys`;
+export const updateHeading = (string) => {
+  heading.innerHTML = string;
+};
 
-  resultsContainer.classList.remove(OPAQUE_CSS);
-  heading.classList.remove(ON_TOP_CSS);
-  resultsContainer.classList.add(VISUALLY_HIDDEN_CSS);
-  resultsContainer.classList.remove(ON_TOP_FULL_SCREEN_CSS);
+export const syncDOMScoreboardWithState = () => {
+  scoreBoard.innerHTML = `${state.score}`;
+};
+
+export const resetUI = () => {
+  updateHeading(`Let's Dudys`);
+  syncDOMScoreboardWithState();
+
+  spinner.classList.remove(VISUALLY_HIDDEN_CSS);
+
+  resultsContainer.classList.add(HIDDEN_CSS);
+  resultsContainer.classList.remove(ON_TOP_FULL_SCREEN_CSS, OPAQUE_CSS);
 
   restartBtn.classList.add(VISUALLY_HIDDEN_CSS);
   resultsList.innerHTML = "";
@@ -108,5 +132,28 @@ const preventPageScroll = (e) => {
 
   if (keys.indexOf(e.code) > -1) {
     e.preventDefault();
+  }
+};
+
+export const setCanvasDimensions = (e) => {
+  const isMobile = window.innerWidth < 500;
+
+  if (!isMobile && state.canvasDimensions.width !== CANVAS_WIDTH) {
+    canvas.width = CANVAS_WIDTH;
+    canvas.height = CANVAS_HEIGHT;
+
+    setState(state, {
+      canvasDimensions: { width: CANVAS_WIDTH, height: CANVAS_HEIGHT },
+    });
+  } else if (isMobile && state.canvasDimensions.width !== CANVAS_WIDTH_MOBILE) {
+    canvas.width = CANVAS_WIDTH_MOBILE;
+    canvas.height = CANVAS_HEIGHT_MOBILE;
+
+    setState(state, {
+      canvasDimensions: {
+        width: CANVAS_WIDTH_MOBILE,
+        height: CANVAS_HEIGHT_MOBILE,
+      },
+    });
   }
 };

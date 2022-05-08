@@ -1,5 +1,10 @@
 import { DIRECTIONS, ORIENTATION, setState, state, jokes } from "./state";
-import { restartUI, showEndOfGameView } from "./ui";
+import {
+  resetUI,
+  showEndOfGameView,
+  syncDOMScoreboardWithState,
+  updateHeading,
+} from "./ui";
 
 const KEYS = {
   LEFT: 37,
@@ -17,14 +22,6 @@ export const calcRandomFoodPlace = () => {
 
 export const initializeStateWithRandomFoodPos = () => {
   setState(state, { foodCoords: calcRandomFoodPlace() });
-};
-
-const updateDOMScoreboard = () => {
-  const element = document.getElementById("score");
-  element.innerHTML = `${state.score}`;
-
-  document.getElementById("heading").innerHTML =
-    jokes[Math.floor(Math.random() * jokes.length)];
 };
 
 const getNewSegmentCoords = () => {
@@ -111,7 +108,9 @@ export const handleFoodCollision = () => {
       score: state.score + 1,
       snake: [...state.snake, getNewSegmentCoords()],
     });
-    updateDOMScoreboard();
+
+    syncDOMScoreboardWithState();
+    updateHeading(jokes[Math.floor(Math.random() * jokes.length)]);
   }
 };
 
@@ -191,5 +190,5 @@ export const restartGame = () => {
     user: "",
   });
 
-  restartUI();
+  resetUI();
 };
