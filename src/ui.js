@@ -11,8 +11,14 @@ import debounce from "lodash.debounce";
 
 import { app } from "./db";
 
-import { enableSteering, restartGame } from "./game";
+import { restartGame } from "./game";
 import { setState, state } from "./state";
+import {
+  enableSteering,
+  handleEndOfSwipe,
+  handleStartOfSwipe,
+  preventPageScroll,
+} from "./steering";
 
 const heading = document.getElementById("heading");
 const formBtn = document.getElementById("form-btn");
@@ -39,12 +45,15 @@ const ON_TOP_CSS = "on-top";
 const ON_TOP_FULL_SCREEN_CSS = "on-top-full-screen";
 
 export const setupListeners = () => {
-  window.addEventListener("resize", debounce(setCanvasDimensions, 50));
+  window.addEventListener("resize", debounce(handleResize, 50));
 
   window.addEventListener("keydown", preventPageScroll);
   document.addEventListener("keydown", enableSteering);
   formBtn.addEventListener("click", handleFormSubmit);
   restartBtn.addEventListener("click", restartGame);
+
+  canvas.addEventListener("touchstart", handleStartOfSwipe);
+  canvas.addEventListener("touchend", handleEndOfSwipe);
 };
 
 const handleFormSubmit = (e) => {
@@ -127,15 +136,7 @@ export const resetUI = () => {
   resultsList.innerHTML = "";
 };
 
-const preventPageScroll = (e) => {
-  const keys = ["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
-
-  if (keys.indexOf(e.code) > -1) {
-    e.preventDefault();
-  }
-};
-
-export const setCanvasDimensions = (e) => {
+export const handleResize = (e) => {
   const isMobile = window.innerWidth < 500;
 
   if (!isMobile && state.canvasDimensions.width !== CANVAS_WIDTH) {
@@ -144,6 +145,7 @@ export const setCanvasDimensions = (e) => {
 
     setState(state, {
       canvasDimensions: { width: CANVAS_WIDTH, height: CANVAS_HEIGHT },
+      speed: 300,
     });
   } else if (isMobile && state.canvasDimensions.width !== CANVAS_WIDTH_MOBILE) {
     canvas.width = CANVAS_WIDTH_MOBILE;
@@ -154,6 +156,7 @@ export const setCanvasDimensions = (e) => {
         width: CANVAS_WIDTH_MOBILE,
         height: CANVAS_HEIGHT_MOBILE,
       },
+      speed: 200,
     });
   }
 };

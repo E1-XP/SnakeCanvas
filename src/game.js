@@ -6,13 +6,6 @@ import {
   updateHeading,
 } from "./ui";
 
-const KEYS = {
-  LEFT: 37,
-  RIGHT: 39,
-  UP: 38,
-  DOWN: 40,
-};
-
 export const calcRandomFoodPlace = () => {
   const x = Math.random() * (canvas.width - state.size);
   const y = Math.random() * (canvas.height - state.size);
@@ -111,65 +104,6 @@ export const handleFoodCollision = () => {
 
     syncDOMScoreboardWithState();
     updateHeading(jokes[Math.floor(Math.random() * jokes.length)]);
-  }
-};
-
-export const enableSteering = (e) => {
-  const genStateUpdate = (direction, orientation) => {
-    const dirChangedOnSameAxis =
-      orientation === state.orientation && direction !== state.direction;
-
-    const rotatedEnoughToChangeDirection = () => {
-      if (state.snake.length <= 1) return true;
-
-      if (
-        (state.orientation === ORIENTATION.HORIZONTAL &&
-          state.snake[0].y === state.snake[1].y) ||
-        (state.orientation === ORIENTATION.VERTICAL &&
-          state.snake[0].x === state.snake[1].x)
-      )
-        return true;
-
-      return false;
-    };
-
-    if (dirChangedOnSameAxis || !rotatedEnoughToChangeDirection()) return {};
-
-    return {
-      direction,
-      orientation,
-      snake: [{ ...state.snake[0], direction }].concat(state.snake.slice(1)),
-    };
-  };
-
-  switch (e.keyCode) {
-    case KEYS.LEFT:
-      {
-        setState(
-          state,
-          genStateUpdate(DIRECTIONS.LEFT, ORIENTATION.HORIZONTAL)
-        );
-      }
-      break;
-    case KEYS.RIGHT:
-      {
-        setState(
-          state,
-          genStateUpdate(DIRECTIONS.RIGHT, ORIENTATION.HORIZONTAL)
-        );
-      }
-      break;
-
-    case KEYS.UP:
-      {
-        setState(state, genStateUpdate(DIRECTIONS.UP, ORIENTATION.VERTICAL));
-      }
-      break;
-    case KEYS.DOWN:
-      {
-        setState(state, genStateUpdate(DIRECTIONS.DOWN, ORIENTATION.VERTICAL));
-      }
-      break;
   }
 };
 

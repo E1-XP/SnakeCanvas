@@ -5,13 +5,13 @@ import "./db";
 
 import { gameLoop } from "./drawing";
 import { initializeStateWithRandomFoodPos } from "./game";
-import { setCanvasDimensions, setupListeners } from "./ui";
+import { handleResize, setupListeners } from "./ui";
 
 const main = (() => {
   const canvas = document.getElementById("canvas");
   const ctx = canvas.getContext("2d");
 
-  setCanvasDimensions();
+  handleResize();
   initializeStateWithRandomFoodPos();
   gameLoop(ctx);
 
