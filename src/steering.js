@@ -122,6 +122,8 @@ export const handleEndOfSwipe = (e) => {
         ORIENTATION.HORIZONTAL
       )
     );
+
+    return;
   }
 
   if (touchEndX > touchStartX) {
@@ -132,6 +134,8 @@ export const handleEndOfSwipe = (e) => {
         ORIENTATION.HORIZONTAL
       )
     );
+
+    return;
   }
 
   if (touchEndY < touchStartY) {
@@ -139,6 +143,8 @@ export const handleEndOfSwipe = (e) => {
       state,
       genStateUpdateAfterDirectionChange(DIRECTIONS.UP, ORIENTATION.VERTICAL)
     );
+
+    return;
   }
 
   if (touchEndY > touchStartY) {
@@ -146,6 +152,8 @@ export const handleEndOfSwipe = (e) => {
       state,
       genStateUpdateAfterDirectionChange(DIRECTIONS.DOWN, ORIENTATION.VERTICAL)
     );
+
+    return;
   }
 
   setState(touchEventState, {
