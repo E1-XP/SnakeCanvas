@@ -1,3 +1,8 @@
+html,
+body {
+  overscroll-behavior-y: contain;
+}
+
 body {
   font-family: "Acme", sans-serif;
   word-spacing: 0.1rem;
@@ -174,7 +179,7 @@ body {
 .results {
   padding-top: max(10%, 8rem);
   font-size: calc(1rem + 0.3vh);
-  transition: background-color .2s ease-in;
+  transition: background-color 0.2s ease-in;
 }
 
 .results__heading {
