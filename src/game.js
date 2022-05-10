@@ -121,7 +121,6 @@ export const restartGame = () => {
     foodCoords: calcRandomFoodPlace(),
     orientation: ORIENTATION.HORIZONTAL,
     direction: DIRECTIONS.RIGHT,
-    user: "",
   });
 
   resetUI();
