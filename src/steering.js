@@ -122,7 +122,11 @@ export const handleEndOfSwipe = (e) => {
         ORIENTATION.HORIZONTAL
       )
     );
-  } else if (touchEndX > touchStartX) {
+
+    alert(DIRECTIONS.LEFT);
+  }
+
+  if (touchEndX > touchStartX) {
     setState(
       state,
       genStateUpdateAfterDirectionChange(
@@ -130,16 +134,26 @@ export const handleEndOfSwipe = (e) => {
         ORIENTATION.HORIZONTAL
       )
     );
-  } else if (touchEndY < touchStartY) {
+
+    alert(DIRECTIONS.RIGHT);
+  }
+
+  if (touchEndY < touchStartY) {
     setState(
       state,
       genStateUpdateAfterDirectionChange(DIRECTIONS.UP, ORIENTATION.VERTICAL)
     );
-  } else if (touchEndY > touchStartY) {
+
+    alert(DIRECTIONS.UP);
+  }
+
+  if (touchEndY > touchStartY) {
     setState(
       state,
       genStateUpdateAfterDirectionChange(DIRECTIONS.DOWN, ORIENTATION.VERTICAL)
     );
+
+    alert(DIRECTIONS.DOWN);
   }
 
   setState(touchEventState, {
