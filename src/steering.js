@@ -114,6 +114,17 @@ export const handleEndOfSwipe = (e) => {
 
   const { touchStartX, touchStartY, touchEndX, touchEndY } = touchEventState;
 
+  const xDiff = touchStartX - touchEndX;
+  const yDiff = touchStartY - touchEndY;
+
+  if (
+    (Math.abs(xDiff) > Math.abs(yDiff) &&
+      Math.abs(xDiff) < 0.33 * document.body.clientWidth) ||
+    (Math.abs(yDiff) > Math.abs(xDiff) &&
+      Math.abs(yDiff) < 0.33 * document.body.clientHeight)
+  )
+    return;
+
   if (touchEndX < touchStartX) {
     setState(
       state,
