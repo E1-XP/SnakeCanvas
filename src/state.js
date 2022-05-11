@@ -85,6 +85,10 @@ export const jokes = [
   "A mi to się marzy taka kolekcja starych motorowerów...",
   "O, to spiewa Piotr Fronczewski, pamiętasz Jontek, Bruce Lee karate Mistrz, oj to były czasy.",
   "Ja to żem kręciił bączki tym wózkiem, dziewczyny piszczały, na centymetry...",
+  "Trzeba jeździć do Niemiec jak ja i sie rozwijać a nie narzekać i nic nie robić jak Robson",
+  "Jak Zenka nie będzie to Ci tak śrubę dokręcę że się nie pozbierasz!",
+  "na starej firmie nosiłem jedna LSke w prawej ręce i druga LSke w lewej ręce.",
+  "Sebastian to jest cyborg. Maszyna nie do zajebania",
 ];
 
 export const setState = (state = {}, updatedStatePartial) => {
