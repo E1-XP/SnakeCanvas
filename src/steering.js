@@ -119,9 +119,9 @@ export const handleEndOfSwipe = (e) => {
 
   if (
     (Math.abs(xDiff) > Math.abs(yDiff) &&
-      Math.abs(xDiff) < 0.2 * document.body.clientWidth) ||
+      Math.abs(xDiff) < 0.1 * document.body.clientWidth) ||
     (Math.abs(yDiff) > Math.abs(xDiff) &&
-      Math.abs(yDiff) < 0.2 * document.body.clientHeight)
+      Math.abs(yDiff) < 0.1 * document.body.clientHeight)
   )
     return;
 
