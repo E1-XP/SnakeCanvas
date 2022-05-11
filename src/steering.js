@@ -119,9 +119,9 @@ export const handleEndOfSwipe = (e) => {
 
   if (
     (Math.abs(xDiff) > Math.abs(yDiff) &&
-      Math.abs(xDiff) < 0.33 * document.body.clientWidth) ||
+      Math.abs(xDiff) < 0.2 * document.body.clientWidth) ||
     (Math.abs(yDiff) > Math.abs(xDiff) &&
-      Math.abs(yDiff) < 0.33 * document.body.clientHeight)
+      Math.abs(yDiff) < 0.2 * document.body.clientHeight)
   )
     return;
 
@@ -137,8 +137,6 @@ export const handleEndOfSwipe = (e) => {
         ORIENTATION.HORIZONTAL
       )
     );
-
-    alert(DIRECTIONS.LEFT);
   }
 
   if (
@@ -153,8 +151,6 @@ export const handleEndOfSwipe = (e) => {
         ORIENTATION.HORIZONTAL
       )
     );
-
-    alert(DIRECTIONS.RIGHT);
   }
 
   if (
@@ -166,8 +162,6 @@ export const handleEndOfSwipe = (e) => {
       state,
       genStateUpdateAfterDirectionChange(DIRECTIONS.UP, ORIENTATION.VERTICAL)
     );
-
-    alert(DIRECTIONS.UP);
   }
 
   if (
@@ -179,8 +173,6 @@ export const handleEndOfSwipe = (e) => {
       state,
       genStateUpdateAfterDirectionChange(DIRECTIONS.DOWN, ORIENTATION.VERTICAL)
     );
-
-    alert(DIRECTIONS.DOWN);
   }
 
   setState(touchEventState, {
