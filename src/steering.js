@@ -125,7 +125,11 @@ export const handleEndOfSwipe = (e) => {
   )
     return;
 
-  if (touchEndX < touchStartX) {
+  if (
+    touchEndX < touchStartX &&
+    state.direction !== DIRECTIONS.RIGHT &&
+    Math.abs(xDiff) > Math.abs(yDiff)
+  ) {
     setState(
       state,
       genStateUpdateAfterDirectionChange(
@@ -137,7 +141,11 @@ export const handleEndOfSwipe = (e) => {
     alert(DIRECTIONS.LEFT);
   }
 
-  if (touchEndX > touchStartX) {
+  if (
+    touchEndX > touchStartX &&
+    state.direction !== DIRECTIONS.LEFT &&
+    Math.abs(xDiff) > Math.abs(yDiff)
+  ) {
     setState(
       state,
       genStateUpdateAfterDirectionChange(
@@ -149,7 +157,11 @@ export const handleEndOfSwipe = (e) => {
     alert(DIRECTIONS.RIGHT);
   }
 
-  if (touchEndY < touchStartY) {
+  if (
+    touchEndY < touchStartY &&
+    state.direction !== DIRECTIONS.DOWN &&
+    Math.abs(xDiff) < Math.abs(yDiff)
+  ) {
     setState(
       state,
       genStateUpdateAfterDirectionChange(DIRECTIONS.UP, ORIENTATION.VERTICAL)
@@ -158,7 +170,11 @@ export const handleEndOfSwipe = (e) => {
     alert(DIRECTIONS.UP);
   }
 
-  if (touchEndY > touchStartY) {
+  if (
+    touchEndY > touchStartY &&
+    state.direction !== DIRECTIONS.UP &&
+    Math.abs(xDiff) < Math.abs(yDiff)
+  ) {
     setState(
       state,
       genStateUpdateAfterDirectionChange(DIRECTIONS.DOWN, ORIENTATION.VERTICAL)
