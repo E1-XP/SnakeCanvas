@@ -205,6 +205,11 @@ body {
 
 .results__item {
   padding: 0.5rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 45ch;
+  margin: 0 auto;
 }
 
 .results__button {
