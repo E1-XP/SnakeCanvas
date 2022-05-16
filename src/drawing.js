@@ -240,7 +240,7 @@ const move = (direction, coords, prevElemCoords) => {
 
         removeUnneccessarySpaceBetweenElements(idealCoords, updatedCoords);
       }
-      if (updatedCoords.x < 0) updatedCoords.x = canvas.width;
+      if (updatedCoords.x < 0 - state.size) updatedCoords.x = canvas.width;
 
       return updatedCoords;
     }
@@ -257,7 +257,7 @@ const move = (direction, coords, prevElemCoords) => {
 
         removeUnneccessarySpaceBetweenElements(idealCoords, updatedCoords);
       }
-      if (updatedCoords.x >= canvas.width) updatedCoords.x = 0;
+      if (updatedCoords.x > canvas.width + state.size) updatedCoords.x = 0;
 
       return updatedCoords;
     }
@@ -274,7 +274,7 @@ const move = (direction, coords, prevElemCoords) => {
 
         removeUnneccessarySpaceBetweenElements(idealCoords, updatedCoords);
       }
-      if (updatedCoords.y < 0) updatedCoords.y = canvas.height;
+      if (updatedCoords.y < 0 - state.size) updatedCoords.y = canvas.height;
 
       return updatedCoords;
     }
@@ -291,7 +291,7 @@ const move = (direction, coords, prevElemCoords) => {
 
         removeUnneccessarySpaceBetweenElements(idealCoords, updatedCoords);
       }
-      if (updatedCoords.y >= canvas.height) updatedCoords.y = 0;
+      if (updatedCoords.y > canvas.height + state.size) updatedCoords.y = 0;
 
       return updatedCoords;
     }
