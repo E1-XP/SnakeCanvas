@@ -12,7 +12,7 @@ import debounce from "lodash.debounce";
 import { app } from "./db";
 
 import { restartGame } from "./game";
-import { setState, state } from "./state";
+import { jokes, setState, state } from "./state";
 import {
   enableSteering,
   handleEndOfSwipe,
@@ -70,6 +70,7 @@ const handleFormSubmit = (e) => {
 
   updateHeading(`Let's Dudys!`);
   setState(state, { isRunning: true, user: userName });
+  syncDOMScoreboardWithState();
 };
 
 export const showEndOfGameView = async () => {
@@ -115,16 +116,26 @@ export const showEndOfGameView = async () => {
   }
 };
 
+export const getRandomJoke = (current = heading.innerHTML) => {
+  let joke = current;
+
+  while (joke === current) {
+    joke = jokes[Math.floor(Math.random() * jokes.length)];
+
+    if (joke !== heading.innerHTML) return joke;
+  }
+};
+
 export const updateHeading = (string) => {
   heading.innerHTML = string;
 };
 
 export const syncDOMScoreboardWithState = () => {
-  scoreBoard.innerHTML = `${state.score}`;
+  scoreBoard.innerHTML = `${state.user}'s score: ${state.score}`;
 };
 
 export const resetUI = () => {
-  updateHeading(`Let's Dudys`);
+  updateHeading(`Let's Dudys!`);
   syncDOMScoreboardWithState();
 
   spinner.classList.remove(VISUALLY_HIDDEN_CSS);

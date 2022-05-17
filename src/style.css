@@ -179,12 +179,11 @@ body {
 }
 
 .scoreboard {
-  font-size: 3rem;
+  font-size: 2.5rem;
 }
 
 .scoreboard__value {
   margin: 1rem auto;
-  width: 2rem;
 }
 
 .results {

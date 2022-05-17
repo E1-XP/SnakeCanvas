@@ -1,5 +1,6 @@
 import { DIRECTIONS, ORIENTATION, setState, state, jokes } from "./state";
 import {
+  getRandomJoke,
   resetUI,
   showEndOfGameView,
   syncDOMScoreboardWithState,
@@ -63,6 +64,8 @@ export const detectTailCollisions = () => {
       const collidedOnXAxis = item.x > itm.x && item.x < itm.x + state.size;
       const collidedOnYAxis = item.y > itm.y && item.y < itm.y + state.size;
 
+      if (Math.abs(idx - i) <= 2) return false;
+
       return Math.abs(idx - i) > 2 && collidedOnXAxis && collidedOnYAxis;
     });
 
@@ -103,7 +106,7 @@ export const handleFoodCollision = () => {
     });
 
     syncDOMScoreboardWithState();
-    updateHeading(jokes[Math.floor(Math.random() * jokes.length)]);
+    updateHeading(getRandomJoke());
   }
 };
 

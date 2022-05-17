@@ -92,7 +92,6 @@ export const jokes = [
   "Idzie ci jako?",
   "Zbieram urlop na Niemcy, tam odpoczywam.",
   "Najważniejsza jest kawa.",
-  "Ciasne są najlepsze...",
   "Kawka, herbatka?",
   "Ja starej rury nie chcę, moja musi mi jeszcze dziecko urodzić.",
   "Pozdrów mi tam Asię Princesse.",
