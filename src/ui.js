@@ -44,6 +44,8 @@ const OPAQUE_CSS = "opaque";
 const ON_TOP_CSS = "on-top";
 const ON_TOP_FULL_SCREEN_CSS = "on-top-full-screen";
 
+const BASE_HEADING = `Let's Dudys!`;
+
 export const setupListeners = () => {
   window.addEventListener("resize", debounce(handleResize, 50));
 
@@ -68,7 +70,7 @@ const handleFormSubmit = (e) => {
     item.classList.remove(VISUALLY_HIDDEN_CSS)
   );
 
-  updateHeading(`Let's Dudys!`);
+  updateHeading(BASE_HEADING);
   setState(state, { isRunning: true, user: userName });
   syncDOMScoreboardWithState();
 };
@@ -135,7 +137,7 @@ export const syncDOMScoreboardWithState = () => {
 };
 
 export const resetUI = () => {
-  updateHeading(`Let's Dudys!`);
+  updateHeading(BASE_HEADING);
   syncDOMScoreboardWithState();
 
   spinner.classList.remove(VISUALLY_HIDDEN_CSS);

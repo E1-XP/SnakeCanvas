@@ -1,23 +1,45 @@
 import { DIRECTIONS, ORIENTATION, setState, state } from "./state";
 
 const KEYS = {
-  LEFT: 37,
-  RIGHT: 39,
-  UP: 38,
-  DOWN: 40,
+  LEFT: "ArrowLeft",
+  RIGHT: "ArrowRight",
+  UP: "ArrowUp",
+  DOWN: "ArrowDown",
 };
 
-const touchEventState = {
+const steeringState = {
   touchStartX: undefined,
   touchStartY: undefined,
   touchEndX: undefined,
   touchEndY: undefined,
+  keyPressQueue: [],
 };
 
 const genStateUpdateAfterDirectionChange = (direction, orientation) => {
   const dirChangedOnSameAxis =
     orientation === state.orientation && direction !== state.direction;
 
+  if (dirChangedOnSameAxis) return {};
+
+  return {
+    direction,
+    orientation,
+    snake: [{ ...state.snake[0], direction }].concat(state.snake.slice(1)),
+  };
+};
+
+export const fireQueuedKeyPresses = () => {
+  if (!steeringState.keyPressQueue.length) return;
+
+  const keyPressQueue = [...steeringState.keyPressQueue];
+  setState(steeringState, { keyPressQueue: [] });
+
+  keyPressQueue.forEach((code) => {
+    document.dispatchEvent(new KeyboardEvent("keydown", { code }));
+  });
+};
+
+export const enableSteering = (e) => {
   const rotatedEnoughToChangeDirection = () => {
     if (state.snake.length <= 1) return true;
 
@@ -32,67 +54,74 @@ const genStateUpdateAfterDirectionChange = (direction, orientation) => {
     return false;
   };
 
-  if (dirChangedOnSameAxis || !rotatedEnoughToChangeDirection()) return {};
+  const checkRotationBetweenSegments = (direction) => {
+    if (!rotatedEnoughToChangeDirection()) {
+      setState(steeringState, { keyPressQueue: [KEYS[direction]] });
+      return false;
+    }
 
-  return {
-    direction,
-    orientation,
-    snake: [{ ...state.snake[0], direction }].concat(state.snake.slice(1)),
+    return true;
   };
-};
 
-export const enableSteering = (e) => {
-  switch (e.keyCode) {
+  switch (e.code) {
     case KEYS.LEFT:
       {
-        setState(
-          state,
-          genStateUpdateAfterDirectionChange(
-            DIRECTIONS.LEFT,
-            ORIENTATION.HORIZONTAL
-          )
-        );
+        if (checkRotationBetweenSegments(DIRECTIONS.LEFT)) {
+          setState(
+            state,
+            genStateUpdateAfterDirectionChange(
+              DIRECTIONS.LEFT,
+              ORIENTATION.HORIZONTAL
+            )
+          );
+        }
       }
       break;
     case KEYS.RIGHT:
       {
-        setState(
-          state,
-          genStateUpdateAfterDirectionChange(
-            DIRECTIONS.RIGHT,
-            ORIENTATION.HORIZONTAL
-          )
-        );
+        if (checkRotationBetweenSegments(DIRECTIONS.RIGHT)) {
+          setState(
+            state,
+            genStateUpdateAfterDirectionChange(
+              DIRECTIONS.RIGHT,
+              ORIENTATION.HORIZONTAL
+            )
+          );
+        }
       }
       break;
 
     case KEYS.UP:
       {
-        setState(
-          state,
-          genStateUpdateAfterDirectionChange(
-            DIRECTIONS.UP,
-            ORIENTATION.VERTICAL
-          )
-        );
+        if (checkRotationBetweenSegments(DIRECTIONS.UP)) {
+          setState(
+            state,
+            genStateUpdateAfterDirectionChange(
+              DIRECTIONS.UP,
+              ORIENTATION.VERTICAL
+            )
+          );
+        }
       }
       break;
     case KEYS.DOWN:
       {
-        setState(
-          state,
-          genStateUpdateAfterDirectionChange(
-            DIRECTIONS.DOWN,
-            ORIENTATION.VERTICAL
-          )
-        );
+        if (checkRotationBetweenSegments(DIRECTIONS.DOWN)) {
+          setState(
+            state,
+            genStateUpdateAfterDirectionChange(
+              DIRECTIONS.DOWN,
+              ORIENTATION.VERTICAL
+            )
+          );
+        }
       }
       break;
   }
 };
 
 export const preventPageScroll = (e) => {
-  const keys = ["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
+  const keys = Object.values(KEYS).concat("Space");
 
   if (keys.indexOf(e.code) > -1) {
     e.preventDefault();
@@ -100,19 +129,19 @@ export const preventPageScroll = (e) => {
 };
 
 export const handleStartOfSwipe = (e) => {
-  setState(touchEventState, {
+  setState(steeringState, {
     touchStartX: e.changedTouches[0].screenX,
     touchStartY: e.changedTouches[0].screenY,
   });
 };
 
 export const handleEndOfSwipe = (e) => {
-  setState(touchEventState, {
+  setState(steeringState, {
     touchEndX: e.changedTouches[0].screenX,
     touchEndY: e.changedTouches[0].screenY,
   });
 
-  const { touchStartX, touchStartY, touchEndX, touchEndY } = touchEventState;
+  const { touchStartX, touchStartY, touchEndX, touchEndY } = steeringState;
 
   const xDiff = touchStartX - touchEndX;
   const yDiff = touchStartY - touchEndY;
@@ -175,7 +204,7 @@ export const handleEndOfSwipe = (e) => {
     );
   }
 
-  setState(touchEventState, {
+  setState(steeringState, {
     touchStartX: undefined,
     touchStartY: undefined,
     touchEndX: undefined,

@@ -1,5 +1,4 @@
 import { state, setState, ORIENTATION, DIRECTIONS } from "./state";
-import { handleFoodCollision, detectTailCollisions } from "./game";
 
 const beerImg = new Image();
 let isLoaded = false;
@@ -296,18 +295,4 @@ const move = (direction, coords, prevElemCoords) => {
       return updatedCoords;
     }
   }
-};
-
-export const gameLoop = (ctx) => {
-  requestAnimationFrame(() => {
-    if (state.isRunning) {
-      updatePosition();
-      clearCanvas(ctx);
-      draw(ctx);
-      detectTailCollisions();
-      handleFoodCollision();
-    }
-
-    gameLoop(ctx);
-  });
 };

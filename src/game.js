@@ -1,3 +1,4 @@
+import { clearCanvas, draw, updatePosition } from "./drawing";
 import { DIRECTIONS, ORIENTATION, setState, state, jokes } from "./state";
 import {
   getRandomJoke,
@@ -64,9 +65,7 @@ export const detectTailCollisions = () => {
       const collidedOnXAxis = item.x > itm.x && item.x < itm.x + state.size;
       const collidedOnYAxis = item.y > itm.y && item.y < itm.y + state.size;
 
-      if (Math.abs(idx - i) <= 2) return false;
-
-      return Math.abs(idx - i) > 2 && collidedOnXAxis && collidedOnYAxis;
+      return Math.abs(idx - i) > 4 && collidedOnXAxis && collidedOnYAxis;
     });
 
     if (collisionWithOtherElement) handleEndOfGame();
@@ -127,4 +126,28 @@ export const restartGame = () => {
   });
 
   resetUI();
+};
+
+const afterTickListeners = [];
+
+export const addAfterTickListener = (cb) => afterTickListeners.push(cb);
+
+export const afterTick = () => {
+  afterTickListeners.forEach((cb) => cb());
+};
+
+export const gameLoop = (ctx) => {
+  requestAnimationFrame(() => {
+    if (state.isRunning) {
+      updatePosition();
+      clearCanvas(ctx);
+      draw(ctx);
+      detectTailCollisions();
+      handleFoodCollision();
+
+      afterTick();
+    }
+
+    gameLoop(ctx);
+  });
 };

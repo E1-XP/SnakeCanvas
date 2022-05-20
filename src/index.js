@@ -3,9 +3,13 @@ import "./style.css";
 
 import "./db";
 
-import { gameLoop } from "./drawing";
-import { initializeStateWithRandomFoodPos } from "./game";
+import {
+  initializeStateWithRandomFoodPos,
+  gameLoop,
+  addAfterTickListener,
+} from "./game";
 import { handleResize, setupListeners } from "./ui";
+import { fireQueuedKeyPresses } from "./steering";
 
 const main = (() => {
   const canvas = document.getElementById("canvas");
@@ -13,6 +17,8 @@ const main = (() => {
 
   handleResize();
   initializeStateWithRandomFoodPos();
+  addAfterTickListener(fireQueuedKeyPresses);
+
   gameLoop(ctx);
 
   setupListeners();
