@@ -42,7 +42,7 @@ const handleDrawingOnCanvasEdges = (ctx, coords) => {
         if (coords.x > canvas.width - state.size) {
           ctx.drawImage(
             whatIsThis,
-            coords.x - canvas.width,
+            coords.x - canvas.width - state.size,
             coords.y,
             state.size,
             state.size
@@ -55,7 +55,7 @@ const handleDrawingOnCanvasEdges = (ctx, coords) => {
         if (coords.x < state.size) {
           ctx.drawImage(
             whatIsThis,
-            coords.x + canvas.width,
+            coords.x + canvas.width + state.size,
             coords.y,
             state.size,
             state.size
@@ -69,7 +69,7 @@ const handleDrawingOnCanvasEdges = (ctx, coords) => {
           ctx.drawImage(
             whatIsThis,
             coords.x,
-            coords.y - canvas.height,
+            coords.y - canvas.height - state.size,
             state.size,
             state.size
           );
@@ -82,7 +82,7 @@ const handleDrawingOnCanvasEdges = (ctx, coords) => {
           ctx.drawImage(
             whatIsThis,
             coords.x,
-            coords.y + canvas.height + state.oneStep,
+            coords.y + canvas.height + state.size,
             state.size,
             state.size
           );
