@@ -5,6 +5,7 @@ const KEYS = {
   RIGHT: "ArrowRight",
   UP: "ArrowUp",
   DOWN: "ArrowDown",
+  SPACE: "Space",
 };
 
 const steeringState = {
@@ -64,6 +65,11 @@ export const enableSteering = (e) => {
   };
 
   switch (e.code) {
+    case KEYS.SPACE: {
+      // slow down/speed up
+      setState(state, { speed: state.speed === 300 ? 900 : 300 });
+      break;
+    }
     case KEYS.LEFT:
       {
         if (checkRotationBetweenSegments(DIRECTIONS.LEFT)) {
