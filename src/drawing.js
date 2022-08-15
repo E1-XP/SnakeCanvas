@@ -19,8 +19,8 @@ const drawSnake = (ctx) => {
   let i = 0;
 
   while (i < state.snake.length) {
-    ctx.drawImage(
-      whatIsThis,
+    drawSegment(
+      ctx,
       state.snake[i].x,
       state.snake[i].y,
       state.size,
@@ -28,6 +28,7 @@ const drawSnake = (ctx) => {
     );
 
     handleDrawingOnCanvasEdges(ctx, state.snake[i]);
+    handleSideEdges(ctx, state.snake[i]);
 
     i++;
   }
@@ -35,56 +36,133 @@ const drawSnake = (ctx) => {
   // fillSpaceBetweenElementsOnDirectionChange(ctx);
 };
 
+const drawSegment = (
+  ctx,
+  x,
+  y,
+  sizeX,
+  sizeY,
+  options = { fill: state.fillStyle }
+) => {
+  ctx.drawImage(whatIsThis, x, y, sizeX, sizeY);
+
+  // ctx.lineWidth = 3;
+  // ctx.strokeStyle = options.fill;
+  // ctx.fillStyle = options.fill;
+
+  // ctx.beginPath();
+  // ctx.arc(x, y, state.size / 2, 0, 2 * Math.PI, false);
+  // ctx.fill();
+};
+
+const handleSideEdges = (ctx, coords) => {
+  if (coords.y >= canvas.height - state.size) {
+    const updatedCoords = {
+      ...coords,
+      y: coords.y - canvas.height,
+    };
+
+    drawSegment(ctx, updatedCoords.x, updatedCoords.y, state.size, state.size, {
+      // fill: "orangered",
+    });
+
+    handleDrawingOnCanvasEdges(ctx, updatedCoords);
+  }
+
+  if (coords.y <= state.size) {
+    const updatedCoords = {
+      ...coords,
+      y: coords.y + canvas.height,
+    };
+
+    drawSegment(ctx, updatedCoords.x, updatedCoords.y, state.size, state.size, {
+      // fill: "orangered",
+    });
+
+    handleDrawingOnCanvasEdges(ctx, updatedCoords);
+  }
+
+  if (coords.x >= canvas.width - state.size) {
+    const updatedCoords = {
+      ...coords,
+      x: coords.x - canvas.width,
+    };
+
+    drawSegment(ctx, updatedCoords.x, updatedCoords.y, state.size, state.size, {
+      // fill: "orangered",
+    });
+
+    handleDrawingOnCanvasEdges(ctx, updatedCoords);
+  }
+
+  if (coords.x <= state.size) {
+    const updatedCoords = {
+      ...coords,
+      x: coords.x + canvas.width,
+    };
+
+    drawSegment(ctx, updatedCoords.x, updatedCoords.y, state.size, state.size, {
+      // fill: "orangered",
+    });
+
+    handleDrawingOnCanvasEdges(ctx, updatedCoords);
+  }
+};
+
 const handleDrawingOnCanvasEdges = (ctx, coords) => {
   switch (coords.direction) {
     case DIRECTIONS.LEFT:
       {
-        if (coords.x > canvas.width - state.size) {
-          ctx.drawImage(
-            whatIsThis,
-            coords.x - canvas.width - state.size,
+        if (coords.x >= canvas.width - state.size) {
+          drawSegment(
+            ctx,
+            coords.x - canvas.width,
             coords.y,
             state.size,
             state.size
+            // { fill: "black" }
           );
         }
       }
       break;
     case DIRECTIONS.RIGHT:
       {
-        if (coords.x < state.size) {
-          ctx.drawImage(
-            whatIsThis,
-            coords.x + canvas.width + state.size,
+        if (coords.x <= 0) {
+          drawSegment(
+            ctx,
+            coords.x + canvas.width,
             coords.y,
             state.size,
             state.size
+            // { fill: "black" }
           );
         }
       }
       break;
     case DIRECTIONS.UP:
       {
-        if (coords.y > canvas.height - state.size) {
-          ctx.drawImage(
-            whatIsThis,
+        if (coords.y >= canvas.height - state.size) {
+          drawSegment(
+            ctx,
             coords.x,
-            coords.y - canvas.height - state.size,
+            coords.y - canvas.height,
             state.size,
             state.size
+            // { fill: "black" }
           );
         }
       }
       break;
     case DIRECTIONS.DOWN:
       {
-        if (coords.y < state.size) {
-          ctx.drawImage(
-            whatIsThis,
+        if (coords.y <= 0) {
+          drawSegment(
+            ctx,
             coords.x,
-            coords.y + canvas.height + state.size,
+            coords.y + canvas.height,
             state.size,
             state.size
+            // { fill: "black" }
           );
         }
       }
@@ -95,7 +173,7 @@ const handleDrawingOnCanvasEdges = (ctx, coords) => {
 const fillSpaceBetweenElementsOnDirectionChange = (ctx) => {
   const snakeDirections = getSnakeDirections().slice(1);
 
-  snakeDirections.map((item) => {
+  snakeDirections.forEach((item) => {
     const coords = state.snake[item.idx - 1];
     const currCoords = state.snake[item.idx];
 
@@ -119,7 +197,7 @@ const fillSpaceBetweenElementsOnDirectionChange = (ctx) => {
 const drawFood = (ctx) => {
   const { x, y } = state.foodCoords;
 
-  ctx.fillStyle = "#000";
+  // ctx.fillStyle = "#000";
   // ctx.fillRect(x, y, state.size, state.size);
 
   if (isLoaded) {
@@ -149,15 +227,17 @@ export const updatePosition = () => {
 };
 
 const getSnakeDirections = () =>
-  state.snake.reduce((acc, { direction }, i) => {
+  state.snake.reduce((acc, { direction }, idx) => {
     if (!acc.length || acc[acc.length - 1].direction !== direction) {
-      acc.push({ direction, idx: i });
+      acc.push({ direction, idx });
     }
 
     return acc;
   }, []);
 
 const previously = (direction, idx) => {
+  if (idx === 0) return false;
+
   const snakeDirections = getSnakeDirections();
 
   const item = snakeDirections
@@ -165,32 +245,52 @@ const previously = (direction, idx) => {
     .reverse()
     .find((item) => item.idx <= idx);
 
-  return idx !== 0 && item.direction === direction;
+  return item.direction === direction;
 };
 
 const getTailCoords = (coords, i, arr) => {
   const { UP, DOWN, LEFT, RIGHT } = DIRECTIONS;
-
-  const snakeDirections = getSnakeDirections();
   const prevElemCoords = arr[i - 1];
 
-  if (previously(UP, i) && prevElemCoords.y < coords.y) {
+  if (!i) return move(state.direction, coords, prevElemCoords);
+
+  if (
+    previously(UP, i) &&
+    (prevElemCoords.y < coords.y ||
+      prevElemCoords.y >= canvas.height - state.size) &&
+    Math.abs(coords.y - prevElemCoords.y) >= state.oneStep
+  ) {
     return move(UP, coords, prevElemCoords);
   }
 
-  if (previously(DOWN, i) && coords.y < prevElemCoords.y) {
+  if (
+    previously(DOWN, i) &&
+    (coords.y < prevElemCoords.y || prevElemCoords.y <= state.size) &&
+    Math.abs(coords.y - prevElemCoords.y) >= state.oneStep
+  ) {
     return move(DOWN, coords, prevElemCoords);
   }
 
-  if (previously(RIGHT, i) && prevElemCoords.x > coords.x) {
+  if (
+    previously(RIGHT, i) &&
+    (prevElemCoords.x > coords.x || prevElemCoords.x <= state.size) &&
+    Math.abs(coords.x - prevElemCoords.x) >= state.oneStep
+  ) {
     return move(RIGHT, coords, prevElemCoords);
   }
 
-  if (previously(LEFT, i) && coords.x > prevElemCoords.x) {
+  if (
+    previously(LEFT, i) &&
+    (coords.x > prevElemCoords.x ||
+      prevElemCoords.x >= canvas.width - state.size) &&
+    Math.abs(coords.x - prevElemCoords.x) >= state.oneStep
+  ) {
     return move(LEFT, coords, prevElemCoords);
   }
 
   const getDirectionToFollow = () => {
+    const snakeDirections = getSnakeDirections();
+
     if (i === 0 || snakeDirections.length === 1) return state.direction;
 
     const foundIdx = snakeDirections.findIndex((item) => item.idx === i) - 1;
@@ -203,94 +303,122 @@ const getTailCoords = (coords, i, arr) => {
   return move(getDirectionToFollow(), coords, prevElemCoords);
 };
 
-const removeUnneccessarySpaceBetweenElements = (idealCoords, presentCoords) => {
-  ["x", "y"].forEach((propKey) => {
-    const tooLowDiff = () =>
-      Math.abs(idealCoords[propKey] - presentCoords[propKey]) < state.oneStep;
-    const tooBigDiff = () =>
-      Math.abs(idealCoords[propKey] - presentCoords[propKey]) > state.size;
-
-    if (presentCoords[propKey] !== idealCoords[propKey]) {
-      presentCoords[propKey] =
-        presentCoords[propKey] > idealCoords[propKey]
-          ? presentCoords[propKey] - state.oneStep
-          : presentCoords[propKey] + state.oneStep;
-
-      if (tooLowDiff() || tooBigDiff())
-        presentCoords[propKey] = idealCoords[propKey];
-    }
-  });
-};
-
 const move = (direction, coords, prevElemCoords) => {
   const sameDirection =
     prevElemCoords && prevElemCoords.direction === direction;
 
+  const toFixed2 = (n) =>
+    +n
+      .toString()
+      .split(".")
+      .map((s, i) => (i ? s.slice(0, 2) : s))
+      .join(".");
+
   switch (direction) {
     case DIRECTIONS.LEFT: {
       const updatedCoords = { ...coords, direction };
+      updatedCoords.x = toFixed2(coords.x - state.oneStep);
 
-      updatedCoords.x = coords.x - state.oneStep;
+      const isOnEdge = (coords) => coords.x < state.oneStep;
+
+      const onEdgeCase = (coords) => {
+        if (isOnEdge(coords)) {
+          coords.x = toFixed2(canvas.width - coords.x);
+        }
+      };
 
       if (sameDirection) {
-        const idealCoords = {};
-        idealCoords.x = prevElemCoords.x + state.size - state.oneStep;
-        idealCoords.y = prevElemCoords.y;
+        const idealCoords = { ...updatedCoords };
+        idealCoords.x = toFixed2(prevElemCoords.x + state.size - state.oneStep);
+        idealCoords.y = toFixed2(prevElemCoords.y);
 
-        removeUnneccessarySpaceBetweenElements(idealCoords, updatedCoords);
+        onEdgeCase(idealCoords);
+
+        return idealCoords;
       }
-      if (updatedCoords.x < 0 - state.size) updatedCoords.x = canvas.width;
+
+      onEdgeCase(updatedCoords);
 
       return updatedCoords;
     }
 
     case DIRECTIONS.RIGHT: {
       const updatedCoords = { ...coords, direction };
+      updatedCoords.x = toFixed2(coords.x + state.oneStep);
 
-      updatedCoords.x = coords.x + state.oneStep;
+      const isOnEdge = (coords) => coords.x >= canvas.width;
+
+      const onEdgeCase = (coords) => {
+        if (isOnEdge(coords)) {
+          coords.x = toFixed2(coords.x - canvas.width);
+        }
+      };
 
       if (sameDirection) {
-        const idealCoords = {};
-        idealCoords.x = prevElemCoords.x - state.size + state.oneStep;
-        idealCoords.y = prevElemCoords.y;
+        const idealCoords = { ...updatedCoords };
+        idealCoords.x = toFixed2(prevElemCoords.x - state.size + state.oneStep);
+        idealCoords.y = toFixed2(prevElemCoords.y);
 
-        removeUnneccessarySpaceBetweenElements(idealCoords, updatedCoords);
+        onEdgeCase(idealCoords);
+
+        return idealCoords;
       }
-      if (updatedCoords.x > canvas.width + state.size) updatedCoords.x = 0;
+
+      onEdgeCase(updatedCoords);
 
       return updatedCoords;
     }
 
     case DIRECTIONS.UP: {
       const updatedCoords = { ...coords, direction };
+      updatedCoords.y = toFixed2(coords.y - state.oneStep);
 
-      updatedCoords.y = coords.y - state.oneStep;
+      const isOnEdge = (coords) => coords.y <= 0;
+
+      const onEdgeCase = (coords) => {
+        if (isOnEdge(coords)) {
+          coords.y = toFixed2(canvas.height - coords.y);
+        }
+      };
 
       if (sameDirection) {
-        const idealCoords = {};
-        idealCoords.y = prevElemCoords.y + state.size - state.oneStep;
-        idealCoords.x = prevElemCoords.x;
+        const idealCoords = { ...updatedCoords };
+        idealCoords.y = toFixed2(prevElemCoords.y + state.size - state.oneStep);
+        idealCoords.x = toFixed2(prevElemCoords.x);
 
-        removeUnneccessarySpaceBetweenElements(idealCoords, updatedCoords);
+        onEdgeCase(idealCoords);
+
+        return idealCoords;
       }
-      if (updatedCoords.y < 0 - state.size) updatedCoords.y = canvas.height;
+
+      onEdgeCase(updatedCoords);
 
       return updatedCoords;
     }
 
     case DIRECTIONS.DOWN: {
       const updatedCoords = { ...coords, direction };
+      updatedCoords.y = toFixed2(coords.y + state.oneStep);
 
-      updatedCoords.y = coords.y + state.oneStep;
+      const isOnEdge = (coords) => coords.y >= canvas.height;
+
+      const onEdgeCase = (coords) => {
+        if (isOnEdge(coords)) {
+          coords.y = toFixed2(coords.y - canvas.height);
+        }
+      };
 
       if (sameDirection) {
-        const idealCoords = {};
-        idealCoords.y = prevElemCoords.y - state.size + state.oneStep;
-        idealCoords.x = prevElemCoords.x;
+        const idealCoords = { ...updatedCoords };
+        idealCoords.y = toFixed2(prevElemCoords.y - state.size + state.oneStep);
+        idealCoords.x = toFixed2(prevElemCoords.x);
 
-        removeUnneccessarySpaceBetweenElements(idealCoords, updatedCoords);
+        onEdgeCase(idealCoords);
+
+        return idealCoords;
       }
-      if (updatedCoords.y > canvas.height + state.size) updatedCoords.y = 0;
+
+      onEdgeCase(updatedCoords);
 
       return updatedCoords;
     }
