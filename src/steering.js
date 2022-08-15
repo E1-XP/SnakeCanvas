@@ -1,4 +1,4 @@
-import { DIRECTIONS, ORIENTATION, setState, state } from "./state";
+import { DIRECTIONS, ORIENTATION, setState, SPEED, state } from "./state";
 
 const KEYS = {
   LEFT: "ArrowLeft",
@@ -67,7 +67,7 @@ export const enableSteering = (e) => {
   switch (e.code) {
     case KEYS.SPACE: {
       // slow down/speed up
-      setState(state, { speed: state.speed === 300 ? 900 : 300 });
+      setState(state, { speed: state.speed === SPEED ? 900 : SPEED });
       break;
     }
     case KEYS.LEFT:
