@@ -4,7 +4,7 @@ import "./style.css";
 import "./db";
 
 import {
-  initializeStateWithRandomFoodPos,
+  setRandomFoodPosition,
   gameLoop,
   addAfterTickListener,
 } from "./game";
@@ -16,7 +16,7 @@ const main = (() => {
   const ctx = canvas.getContext("2d");
 
   handleResize();
-  initializeStateWithRandomFoodPos();
+  setRandomFoodPosition();
   addAfterTickListener(fireQueuedKeyPresses);
 
   gameLoop(ctx);

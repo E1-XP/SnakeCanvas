@@ -15,7 +15,7 @@ export const calcRandomFoodPlace = () => {
   return { x, y };
 };
 
-export const initializeStateWithRandomFoodPos = () => {
+export const setRandomFoodPosition = () => {
   setState(state, { foodCoords: calcRandomFoodPlace() });
 };
 
@@ -86,7 +86,7 @@ export const detectTailCollisions = () => {
   });
 };
 
-export const handleFoodCollision = () => {
+export const checkFoodCollision = () => {
   const foodObjectBorders = {
     xStart: state.foodCoords.x,
     xEnd: state.foodCoords.x + state.size,
@@ -110,17 +110,19 @@ export const handleFoodCollision = () => {
       coord >= foodObjectBorders.yStart && coord <= foodObjectBorders.yEnd
   );
 
-  if (collidedOnXAxis && collidedOnYAxis) {
-    initializeStateWithRandomFoodPos();
+  if (collidedOnXAxis && collidedOnYAxis) handleAfterFoodCollision();
+};
 
-    setState(state, {
-      score: state.score + 1,
-      snake: [...state.snake, getNewSegmentCoords()],
-    });
+const handleAfterFoodCollision = () => {
+  setRandomFoodPosition();
 
-    syncDOMScoreboardWithState();
-    updateHeading(getRandomJoke());
-  }
+  setState(state, {
+    score: state.score + 1,
+    snake: [...state.snake, getNewSegmentCoords()],
+  });
+
+  syncDOMScoreboardWithState();
+  updateHeading(getRandomJoke());
 };
 
 export const restartGame = () => {
@@ -157,7 +159,7 @@ export const gameLoop = (ctx) => {
       clearCanvas(ctx);
       draw(ctx);
       detectTailCollisions();
-      handleFoodCollision();
+      checkFoodCollision();
 
       afterTick();
     }
