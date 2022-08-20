@@ -16,22 +16,13 @@ whatIsThis.onload = function () {
 whatIsThis.src = "./assets/what.gif";
 
 const drawSnake = (ctx) => {
-  let i = 0;
+  setState(state, { snakeBorderTails: [] });
 
-  while (i < state.snake.length) {
-    drawSegment(
-      ctx,
-      state.snake[i].x,
-      state.snake[i].y,
-      state.size,
-      state.size
-    );
-
-    handleDrawingOnCanvasEdges(ctx, state.snake[i]);
-    handleSideEdges(ctx, state.snake[i]);
-
-    i++;
-  }
+  state.snake.forEach((coords) => {
+    drawSegment(ctx, coords.x, coords.y, state.size, state.size);
+    handleDrawingOnCanvasEdges(ctx, coords);
+    handleSideEdges(ctx, coords);
+  });
 
   // fillSpaceBetweenElementsOnDirectionChange(ctx);
 };
@@ -44,18 +35,24 @@ const drawSegment = (
   sizeY,
   options = { fill: state.fillStyle }
 ) => {
-  ctx.drawImage(whatIsThis, x, y, sizeX, sizeY);
+  const drawImage = () => ctx.drawImage(whatIsThis, x, y, sizeX, sizeY);
 
-  // ctx.lineWidth = 3;
-  // ctx.strokeStyle = options.fill;
-  // ctx.fillStyle = options.fill;
+  const drawCircle = () => {
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = options.fill;
+    ctx.fillStyle = options.fill;
 
-  // ctx.beginPath();
-  // ctx.arc(x, y, state.size / 2, 0, 2 * Math.PI, false);
-  // ctx.fill();
+    ctx.beginPath();
+    ctx.arc(x, y, state.size / 2, 0, 2 * Math.PI, false);
+    ctx.fill();
+  };
+
+  drawImage();
 };
 
 const handleSideEdges = (ctx, coords) => {
+  const { snakeBorderTails } = state;
+
   if (coords.y >= canvas.height - state.size) {
     const updatedCoords = {
       ...coords,
@@ -63,7 +60,11 @@ const handleSideEdges = (ctx, coords) => {
     };
 
     drawSegment(ctx, updatedCoords.x, updatedCoords.y, state.size, state.size, {
-      // fill: "orangered",
+      fill: "orangered",
+    });
+
+    setState(state, {
+      snakeBorderTails: [...snakeBorderTails, updatedCoords],
     });
 
     handleDrawingOnCanvasEdges(ctx, updatedCoords);
@@ -76,7 +77,11 @@ const handleSideEdges = (ctx, coords) => {
     };
 
     drawSegment(ctx, updatedCoords.x, updatedCoords.y, state.size, state.size, {
-      // fill: "orangered",
+      fill: "orangered",
+    });
+
+    setState(state, {
+      snakeBorderTails: [...snakeBorderTails, updatedCoords],
     });
 
     handleDrawingOnCanvasEdges(ctx, updatedCoords);
@@ -89,7 +94,11 @@ const handleSideEdges = (ctx, coords) => {
     };
 
     drawSegment(ctx, updatedCoords.x, updatedCoords.y, state.size, state.size, {
-      // fill: "orangered",
+      fill: "orangered",
+    });
+
+    setState(state, {
+      snakeBorderTails: [...snakeBorderTails, updatedCoords],
     });
 
     handleDrawingOnCanvasEdges(ctx, updatedCoords);
@@ -102,7 +111,11 @@ const handleSideEdges = (ctx, coords) => {
     };
 
     drawSegment(ctx, updatedCoords.x, updatedCoords.y, state.size, state.size, {
-      // fill: "orangered",
+      fill: "orangered",
+    });
+
+    setState(state, {
+      snakeBorderTails: [...snakeBorderTails, updatedCoords],
     });
 
     handleDrawingOnCanvasEdges(ctx, updatedCoords);
@@ -110,60 +123,98 @@ const handleSideEdges = (ctx, coords) => {
 };
 
 const handleDrawingOnCanvasEdges = (ctx, coords) => {
+  const { snakeBorderTails } = state;
+
   switch (coords.direction) {
     case DIRECTIONS.LEFT:
       {
+        const updatedCoords = {
+          ...coords,
+          x: coords.x - canvas.width,
+        };
+
         if (coords.x >= canvas.width - state.size) {
           drawSegment(
             ctx,
-            coords.x - canvas.width,
-            coords.y,
+            updatedCoords.x,
+            updatedCoords.y,
             state.size,
-            state.size
-            // { fill: "black" }
+            state.size,
+            { fill: "black" }
           );
+
+          setState(state, {
+            snakeBorderTails: [...snakeBorderTails, updatedCoords],
+          });
         }
       }
       break;
     case DIRECTIONS.RIGHT:
       {
         if (coords.x <= 0) {
+          const updatedCoords = {
+            ...coords,
+            x: coords.x + canvas.width,
+          };
+
           drawSegment(
             ctx,
-            coords.x + canvas.width,
-            coords.y,
+            updatedCoords.x,
+            updatedCoords.y,
             state.size,
-            state.size
-            // { fill: "black" }
+            state.size,
+            { fill: "black" }
           );
+
+          setState(state, {
+            snakeBorderTails: [...snakeBorderTails, updatedCoords],
+          });
         }
       }
       break;
     case DIRECTIONS.UP:
       {
         if (coords.y >= canvas.height - state.size) {
+          const updatedCoords = {
+            ...coords,
+            y: coords.y - canvas.height,
+          };
+
           drawSegment(
             ctx,
-            coords.x,
-            coords.y - canvas.height,
+            updatedCoords.x,
+            updatedCoords.y,
             state.size,
-            state.size
-            // { fill: "black" }
+            state.size,
+            { fill: "black" }
           );
+
+          setState(state, {
+            snakeBorderTails: [...snakeBorderTails, updatedCoords],
+          });
         }
       }
       break;
     case DIRECTIONS.DOWN:
       {
         if (coords.y <= 0) {
+          const updatedCoords = {
+            ...coords,
+            y: coords.y + canvas.height,
+          };
+
           drawSegment(
             ctx,
-            coords.x,
-            coords.y + canvas.height,
+            updatedCoords.x,
+            updatedCoords.y,
             state.size,
-            state.size
-            // { fill: "black" }
+            state.size,
+            { fill: "black" }
           );
+
+          setState(state, {
+            snakeBorderTails: [...snakeBorderTails, updatedCoords],
+          });
         }
       }
       break;

@@ -21,6 +21,7 @@ export const initializeStateWithRandomFoodPos = () => {
 
 const getNewSegmentCoords = () => {
   const len = state.snake.length;
+  const idx = len;
   const direction = state.snake[len - 1].direction;
 
   switch (direction) {
@@ -28,28 +29,28 @@ const getNewSegmentCoords = () => {
       const x = state.snake[len - 1].x;
       const y = state.snake[len - 1].y + state.size;
 
-      return { x, y, direction };
+      return { x, y, direction, idx };
     }
 
     case DIRECTIONS.DOWN: {
       const x = state.snake[len - 1].x;
       const y = state.snake[len - 1].y - state.size;
 
-      return { x, y, direction };
+      return { x, y, direction, idx };
     }
 
     case DIRECTIONS.LEFT: {
       const x = state.snake[len - 1].x + state.size;
       const y = state.snake[len - 1].y;
 
-      return { x, y, direction };
+      return { x, y, direction, idx };
     }
 
     case DIRECTIONS.RIGHT: {
       const x = state.snake[len - 1].x - state.size;
       const y = state.snake[len - 1].y;
 
-      return { x, y, direction };
+      return { x, y, direction, idx };
     }
   }
 };
@@ -60,15 +61,28 @@ const handleEndOfGame = () => {
 };
 
 export const detectTailCollisions = () => {
+  const collisionDetected = (a, b) => {
+    const collidedOnXAxis = a.x > b.x && a.x < b.x + state.size;
+    const collidedOnYAxis = a.y > b.y && a.y < b.y + state.size;
+
+    return collidedOnXAxis && collidedOnYAxis;
+  };
+
+  const notSameCoords = (a, b) => a.idx !== b.idx;
+
   state.snake.forEach((item, idx) => {
-    const collisionWithOtherElement = state.snake.some((itm, i) => {
-      const collidedOnXAxis = item.x > itm.x && item.x < itm.x + state.size;
-      const collidedOnYAxis = item.y > itm.y && item.y < itm.y + state.size;
+    const collidedWithOtherElement = state.snake.some(
+      (itm, i) => Math.abs(idx - i) > 4 && collisionDetected(item, itm)
+    );
 
-      return Math.abs(idx - i) > 4 && collidedOnXAxis && collidedOnYAxis;
-    });
+    const collidedWithBorderTail = state.snakeBorderTails.some(
+      (coords) =>
+        notSameCoords(item, coords) &&
+        Math.abs(idx - coords.idx) > 4 &&
+        collisionDetected(item, coords)
+    );
 
-    if (collisionWithOtherElement) handleEndOfGame();
+    if (collidedWithOtherElement || collidedWithBorderTail) handleEndOfGame();
   });
 };
 
