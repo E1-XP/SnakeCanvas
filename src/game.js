@@ -88,7 +88,9 @@ export const detectTailCollisions = () => {
         collisionDetected(item, coords)
     );
 
-    if (collidedWithOtherElement || collidedWithBorderTail) handleEndOfGame();
+    if ((collidedWithOtherElement || collidedWithBorderTail) && state.isRunning) {
+      handleEndOfGame();
+    }
   });
 };
 

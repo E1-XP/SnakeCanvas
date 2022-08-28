@@ -87,12 +87,13 @@ export const showEndOfGameView = async () => {
 
   try {
     const db = getFirestore(app);
-    const scoresRef = collection(db, "scores");
 
     await addDoc(collection(db, "scores"), {
       name: state.user,
       score: state.score,
     });
+
+    const scoresRef = collection(db, "scores");
 
     const response = await getDocs(
       query(scoresRef, orderBy("score", "desc"), limit(8))
