@@ -177,18 +177,38 @@ body {
   border: 2px solid darkslategrey;
 }
 
-.scoreboard {
+.gameboard {
   font-size: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
 @media only screen and (max-width: 500px) {
-  .scoreboard {
+  .gameboard {
     font-size: 1.5rem;
   }
 }
 
-.scoreboard__value {
+.gameboard__score {
   margin: 1rem auto;
+}
+
+.gameboard__button {
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  border-radius: 50%;
+  outline-offset: 1px;
+}
+
+.gameboard__button span {
+  font-size: 3rem;
+  border-radius: 50%;
+  display: block;
 }
 
 .results {

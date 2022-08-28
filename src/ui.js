@@ -11,7 +11,7 @@ import debounce from "lodash.debounce";
 
 import { app } from "./db";
 
-import { restartGame } from "./game";
+import { playPauseGame, restartGame } from "./game";
 import { jokes, setState, state } from "./state";
 import {
   enableSteering,
@@ -30,6 +30,7 @@ const resultsContainer = document.getElementById("results");
 const resultsList = resultsContainer.querySelector(".results__list");
 const scoreBoard = document.getElementById("score");
 const spinner = document.getElementById("spinner");
+const playPauseBtn = document.getElementById("playpause-button");
 const restartBtn = document.getElementById("restart-button");
 const headerImages = document.getElementsByClassName("header__image");
 
@@ -52,6 +53,7 @@ export const setupListeners = () => {
   window.addEventListener("keydown", preventPageScroll);
   document.addEventListener("keydown", enableSteering);
   formBtn.addEventListener("click", handleFormSubmit);
+  playPauseBtn.addEventListener("click", playPauseGame);
   restartBtn.addEventListener("click", restartGame);
 
   canvas.addEventListener("touchstart", handleStartOfSwipe);
@@ -134,6 +136,12 @@ export const updateHeading = (string) => {
 
 export const syncDOMScoreboardWithState = () => {
   scoreBoard.innerHTML = `${state.user}'s score: ${state.score}`;
+};
+
+export const playPauseUI = () => {
+  state.isRunning
+    ? (playPauseBtn.querySelector("span").innerHTML = "pause_circle_filled")
+    : (playPauseBtn.querySelector("span").innerHTML = "play_circle");
 };
 
 export const resetUI = () => {

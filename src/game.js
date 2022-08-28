@@ -2,6 +2,7 @@ import { clearCanvas, draw, updatePosition } from "./drawing";
 import { DIRECTIONS, ORIENTATION, setState, state, jokes } from "./state";
 import {
   getRandomJoke,
+  playPauseUI,
   resetUI,
   showEndOfGameView,
   syncDOMScoreboardWithState,
@@ -116,6 +117,16 @@ const handleAfterFoodCollision = () => {
 
   syncDOMScoreboardWithState();
   updateHeading(getRandomJoke());
+};
+
+export const playPauseGame = () => {
+  if (state.isRunning) {
+    setState(state, { isRunning: false });
+  } else {
+    setState(state, { isRunning: true });
+  }
+
+  playPauseUI();
 };
 
 export const restartGame = () => {
