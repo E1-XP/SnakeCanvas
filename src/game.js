@@ -1,4 +1,4 @@
-import { clearCanvas, draw, updatePosition } from "./drawing";
+import { beerImg, clearCanvas, draw, updatePosition } from "./drawing";
 import { DIRECTIONS, ORIENTATION, setState, state, jokes } from "./state";
 import {
   getRandomJoke,
@@ -7,10 +7,11 @@ import {
   syncDOMScoreboardWithState,
   updateHeading,
 } from "./ui";
+import { toFixed2 } from "./helpers";
 
 export const calcRandomFoodPlace = () => {
-  const x = Math.random() * (canvas.width - state.size);
-  const y = Math.random() * (canvas.height - state.size);
+  const x = toFixed2(Math.random() * (canvas.width - state.size));
+  const y = toFixed2(Math.random() * (canvas.height - state.size));
 
   return { x, y };
 };
@@ -60,14 +61,18 @@ const handleEndOfGame = () => {
   showEndOfGameView();
 };
 
+const collisionDetected = (a, b) => {
+  const collidedOnXAxis = [a.x, a.x + state.size].some(
+    (coord) => coord >= b.x && coord <= b.x + state.size
+  );
+  const collidedOnYAxis = [a.y, a.y + state.size].some(
+    (coord) => coord >= b.y && coord <= b.y + state.size
+  );
+
+  return collidedOnXAxis && collidedOnYAxis;
+};
+
 export const detectTailCollisions = () => {
-  const collisionDetected = (a, b) => {
-    const collidedOnXAxis = a.x > b.x && a.x < b.x + state.size;
-    const collidedOnYAxis = a.y > b.y && a.y < b.y + state.size;
-
-    return collidedOnXAxis && collidedOnYAxis;
-  };
-
   const notSameCoords = (a, b) => a.idx !== b.idx;
 
   state.snake.forEach((item, idx) => {
@@ -86,31 +91,19 @@ export const detectTailCollisions = () => {
   });
 };
 
-export const checkFoodCollision = () => {
-  const foodObjectBorders = {
-    xStart: state.foodCoords.x,
-    xEnd: state.foodCoords.x + state.size,
-    yStart: state.foodCoords.y,
-    yEnd: state.foodCoords.y + state.size,
-  };
-
-  const collidedOnXAxis = [
-    state.snake[0].x,
-    state.snake[0].x + state.size,
-  ].some(
-    (coord) =>
-      coord >= foodObjectBorders.xStart && coord <= foodObjectBorders.xEnd
+export const detectFoodCollision = () => {
+  const collidedWithOtherElement = collisionDetected(
+    state.snake[0],
+    state.foodCoords
   );
 
-  const collidedOnYAxis = [
-    state.snake[0].y,
-    state.snake[0].y + state.size,
-  ].some(
-    (coord) =>
-      coord >= foodObjectBorders.yStart && coord <= foodObjectBorders.yEnd
-  );
+  const collidedWithBorderTail = state.snakeBorderTails
+    .filter(({ idx }) => !idx)
+    .some((coords) => collisionDetected(coords, state.foodCoords));
 
-  if (collidedOnXAxis && collidedOnYAxis) handleAfterFoodCollision();
+  if (collidedWithOtherElement || collidedWithBorderTail) {
+    handleAfterFoodCollision();
+  }
 };
 
 const handleAfterFoodCollision = () => {
@@ -158,8 +151,8 @@ export const gameLoop = (ctx) => {
       updatePosition();
       clearCanvas(ctx);
       draw(ctx);
+      detectFoodCollision();
       detectTailCollisions();
-      checkFoodCollision();
 
       afterTick();
     }

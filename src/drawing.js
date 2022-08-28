@@ -1,18 +1,10 @@
 import { state, setState, ORIENTATION, DIRECTIONS } from "./state";
+import { toFixed2 } from "./helpers";
 
-const beerImg = new Image();
-let isLoaded = false;
-beerImg.onload = function () {
-  isLoaded = true;
-};
-
+export const beerImg = new Image();
 beerImg.src = "./assets/beer.gif";
 
 const whatIsThis = new Image();
-let isThisLoaded = false;
-whatIsThis.onload = function () {
-  isThisLoaded = true;
-};
 whatIsThis.src = "./assets/what.gif";
 
 const drawSnake = (ctx) => {
@@ -248,17 +240,8 @@ const fillSpaceBetweenElementsOnDirectionChange = (ctx) => {
 const drawFood = (ctx) => {
   const { x, y } = state.foodCoords;
 
-  // ctx.fillStyle = "#000";
-  // ctx.fillRect(x, y, state.size, state.size);
-
-  if (isLoaded) {
-    ctx.drawImage(
-      beerImg,
-      x - beerImg.width / 7 / 2 + 20,
-      y - beerImg.height / 7 / 2 + 10,
-      beerImg.width / 7,
-      beerImg.height / 7
-    );
+  if (beerImg.complete) {
+    ctx.drawImage(beerImg, x, y, state.size, state.size);
   }
 };
 
@@ -357,13 +340,6 @@ const getTailCoords = (coords, i, arr) => {
 const move = (direction, coords, prevElemCoords) => {
   const sameDirection =
     prevElemCoords && prevElemCoords.direction === direction;
-
-  const toFixed2 = (n) =>
-    +n
-      .toString()
-      .split(".")
-      .map((s, i) => (i ? s.slice(0, 2) : s))
-      .join(".");
 
   switch (direction) {
     case DIRECTIONS.LEFT: {
