@@ -1,22 +1,41 @@
 import { state, setState, ORIENTATION, DIRECTIONS } from "./state";
 import { toFixed2 } from "./helpers";
 
-export const beerImg = new Image();
+const beerImg = new Image();
 beerImg.src = "./assets/beer.gif";
 
-const whatIsThis = new Image();
-whatIsThis.src = "./assets/what.gif";
+const headImg = new Image();
+headImg.src = "./assets/head.jpg";
+
+const bodyImg = new Image();
+bodyImg.src = "./assets/body.jpg";
+
+const legsImg = new Image();
+legsImg.src = "./assets/legs.jpg";
 
 const drawSnake = (ctx) => {
   setState(state, { snakeBorderTails: [] });
 
   state.snake.forEach((coords) => {
-    drawSegment(ctx, coords.x, coords.y, state.size, state.size);
+    drawSegment(ctx, coords.x, coords.y, state.size, state.size, {
+      image: selectImage(coords.idx),
+    });
+
     handleDrawingOnCanvasEdges(ctx, coords);
     handleSideEdges(ctx, coords);
   });
 
-  // fillSpaceBetweenElementsOnDirectionChange(ctx);
+  fillSpaceBetweenElementsOnDirectionChange(ctx);
+};
+
+const selectImage = (idx) => {
+  if (!idx) return headImg;
+
+  if (state.snake.length === 2) {
+    return bodyImg;
+  }
+
+  return idx > (state.snake.length - 1) / 2 ? legsImg : bodyImg;
 };
 
 const drawSegment = (
@@ -25,9 +44,9 @@ const drawSegment = (
   y,
   sizeX,
   sizeY,
-  options = { fill: state.fillStyle }
+  options = { fill: state.fillStyle, image: headImg }
 ) => {
-  const drawImage = () => ctx.drawImage(whatIsThis, x, y, sizeX, sizeY);
+  const drawImage = () => ctx.drawImage(options.image, x, y, sizeX, sizeY);
 
   const drawCircle = () => {
     ctx.lineWidth = 3;
@@ -52,6 +71,7 @@ const handleSideEdges = (ctx, coords) => {
     };
 
     drawSegment(ctx, updatedCoords.x, updatedCoords.y, state.size, state.size, {
+      image: selectImage(updatedCoords.idx),
       fill: "orangered",
     });
 
@@ -69,6 +89,7 @@ const handleSideEdges = (ctx, coords) => {
     };
 
     drawSegment(ctx, updatedCoords.x, updatedCoords.y, state.size, state.size, {
+      image: selectImage(updatedCoords.idx),
       fill: "orangered",
     });
 
@@ -86,6 +107,7 @@ const handleSideEdges = (ctx, coords) => {
     };
 
     drawSegment(ctx, updatedCoords.x, updatedCoords.y, state.size, state.size, {
+      image: selectImage(updatedCoords.idx),
       fill: "orangered",
     });
 
@@ -103,6 +125,7 @@ const handleSideEdges = (ctx, coords) => {
     };
 
     drawSegment(ctx, updatedCoords.x, updatedCoords.y, state.size, state.size, {
+      image: selectImage(updatedCoords.idx),
       fill: "orangered",
     });
 
@@ -132,7 +155,10 @@ const handleDrawingOnCanvasEdges = (ctx, coords) => {
             updatedCoords.y,
             state.size,
             state.size,
-            { fill: "black" }
+            {
+              fill: "black",
+              image: selectImage(updatedCoords.idx),
+            }
           );
 
           setState(state, {
@@ -155,7 +181,10 @@ const handleDrawingOnCanvasEdges = (ctx, coords) => {
             updatedCoords.y,
             state.size,
             state.size,
-            { fill: "black" }
+            {
+              fill: "black",
+              image: selectImage(updatedCoords.idx),
+            }
           );
 
           setState(state, {
@@ -178,7 +207,10 @@ const handleDrawingOnCanvasEdges = (ctx, coords) => {
             updatedCoords.y,
             state.size,
             state.size,
-            { fill: "black" }
+            {
+              fill: "black",
+              image: selectImage(updatedCoords.idx),
+            }
           );
 
           setState(state, {
@@ -201,7 +233,10 @@ const handleDrawingOnCanvasEdges = (ctx, coords) => {
             updatedCoords.y,
             state.size,
             state.size,
-            { fill: "black" }
+            {
+              fill: "black",
+              image: selectImage(updatedCoords.idx),
+            }
           );
 
           setState(state, {
@@ -222,16 +257,24 @@ const fillSpaceBetweenElementsOnDirectionChange = (ctx) => {
 
     switch (coords.direction) {
       case DIRECTIONS.UP:
-        ctx.fillRect(coords.x, currCoords.y, state.size, state.size);
+        drawSegment(ctx, coords.x, currCoords.y, state.size, state.size, {
+          image: selectImage(coords.idx),
+        });
         break;
       case DIRECTIONS.DOWN:
-        ctx.fillRect(coords.x, currCoords.y, state.size, state.size);
+        drawSegment(ctx, coords.x, currCoords.y, state.size, state.size, {
+          image: selectImage(coords.idx),
+        });
         break;
       case DIRECTIONS.LEFT:
-        ctx.fillRect(currCoords.x, coords.y, state.size, state.size);
+        drawSegment(ctx, currCoords.x, coords.y, state.size, state.size, {
+          image: selectImage(coords.idx),
+        });
         break;
       case DIRECTIONS.RIGHT:
-        ctx.fillRect(currCoords.x, coords.y, state.size, state.size);
+        drawSegment(ctx, currCoords.x, coords.y, state.size, state.size, {
+          image: selectImage(coords.idx),
+        });
         break;
     }
   });

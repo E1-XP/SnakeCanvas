@@ -1,4 +1,4 @@
-import { beerImg, clearCanvas, draw, updatePosition } from "./drawing";
+import { clearCanvas, draw, updatePosition } from "./drawing";
 import { DIRECTIONS, ORIENTATION, setState, state, jokes } from "./state";
 import {
   getRandomJoke,
