@@ -58,6 +58,16 @@ const drawSegment = (
     ctx.fill();
   };
 
+  const drawRect = () => {
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = options.fill;
+    ctx.fillStyle = options.fill;
+
+    ctx.beginPath();
+    ctx.rect(x, y, state.size, state.size);
+    ctx.fill();
+  };
+
   drawImage();
 };
 
@@ -250,10 +260,13 @@ const handleDrawingOnCanvasEdges = (ctx, coords) => {
 
 const fillSpaceBetweenElementsOnDirectionChange = (ctx) => {
   const snakeDirections = getSnakeDirections().slice(1);
+  const snakeEdgeTailDirections = getSnakeDirections(
+    state.snakeBorderTails
+  ).slice(1);
 
-  snakeDirections.forEach((item) => {
-    const coords = state.snake[item.idx - 1];
-    const currCoords = state.snake[item.idx];
+  const drawOnDirectionChangeEdges = (snakeArray) => (item) => {
+    const coords = snakeArray[item.idx - 1];
+    const currCoords = snakeArray[item.idx];
 
     switch (coords.direction) {
       case DIRECTIONS.UP:
@@ -277,7 +290,12 @@ const fillSpaceBetweenElementsOnDirectionChange = (ctx) => {
         });
         break;
     }
-  });
+  };
+
+  snakeDirections.forEach(drawOnDirectionChangeEdges(state.snake));
+  snakeEdgeTailDirections.forEach(
+    drawOnDirectionChangeEdges(state.snakeBorderTails)
+  );
 };
 
 const drawFood = (ctx) => {
@@ -303,10 +321,10 @@ export const updatePosition = () => {
   setState(state, { snake: updatedSnakeBody });
 };
 
-const getSnakeDirections = () =>
-  state.snake.reduce((acc, { direction }, idx) => {
-    if (!acc.length || acc[acc.length - 1].direction !== direction) {
-      acc.push({ direction, idx });
+const getSnakeDirections = (snake = state.snake) =>
+  snake.reduce((acc, item, idx) => {
+    if (!acc.length || acc[acc.length - 1].direction !== item.direction) {
+      acc.push({ ...item, idx });
     }
 
     return acc;
