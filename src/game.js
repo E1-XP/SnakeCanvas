@@ -18,7 +18,13 @@ export const calcRandomFoodPlace = () => {
 };
 
 export const setRandomFoodPosition = () => {
-  setState(state, { foodCoords: calcRandomFoodPlace() });
+  let foodCoords = calcRandomFoodPlace();
+
+  while (state.snake.some((coords) => collisionDetected(foodCoords, coords))) {
+    foodCoords = calcRandomFoodPlace();
+  }
+
+  setState(state, { foodCoords });
 };
 
 const getNewSegmentCoords = () => {
