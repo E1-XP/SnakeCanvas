@@ -85,13 +85,13 @@ export const detectTailCollisions = () => {
   const firstElem = state.snake[0];
 
   const collidedWithOtherElement = state.snake.some(
-    (itm, i) => Math.abs(i) > 4 && collisionDetected(firstElem, itm)
+    (itm, i) => Math.abs(i) > 3 && collisionDetected(firstElem, itm)
   );
 
   const collidedWithBorderTail = state.snakeBorderTails.some(
     (coords) =>
       notSameCoords(firstElem, coords) &&
-      Math.abs(coords.idx) > 4 &&
+      Math.abs(coords.idx) > 3 &&
       collisionDetected(firstElem, coords)
   );
 
