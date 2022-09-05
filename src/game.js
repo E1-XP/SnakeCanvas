@@ -76,22 +76,22 @@ const collisionDetected = (a, b) => {
 export const detectTailCollisions = () => {
   const notSameCoords = (a, b) => a.idx !== b.idx;
 
-  state.snake.forEach((item, idx) => {
-    const collidedWithOtherElement = state.snake.some(
-      (itm, i) => Math.abs(idx - i) > 4 && collisionDetected(item, itm)
-    );
+  const firstElem = state.snake[0];
 
-    const collidedWithBorderTail = state.snakeBorderTails.some(
-      (coords) =>
-        notSameCoords(item, coords) &&
-        Math.abs(idx - coords.idx) > 4 &&
-        collisionDetected(item, coords)
-    );
+  const collidedWithOtherElement = state.snake.some(
+    (itm, i) => Math.abs(i) > 4 && collisionDetected(firstElem, itm)
+  );
 
-    if ((collidedWithOtherElement || collidedWithBorderTail) && state.isRunning) {
-      handleEndOfGame();
-    }
-  });
+  const collidedWithBorderTail = state.snakeBorderTails.some(
+    (coords) =>
+      notSameCoords(firstElem, coords) &&
+      Math.abs(coords.idx) > 4 &&
+      collisionDetected(firstElem, coords)
+  );
+
+  if (collidedWithBorderTail || (collidedWithOtherElement && state.isRunning)) {
+    handleEndOfGame();
+  }
 };
 
 export const detectFoodCollision = () => {
