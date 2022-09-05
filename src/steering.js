@@ -66,8 +66,11 @@ export const enableSteering = (e) => {
 
   switch (e.code) {
     case KEYS.SPACE: {
+      const devMode = process.env.NODE_ENV === "development";
+
       // slow down/speed up
-      setState(state, { speed: state.speed === SPEED ? 900 : SPEED });
+      if (devMode)
+        setState(state, { speed: state.speed === SPEED ? 900 : SPEED });
       break;
     }
     case KEYS.LEFT:
