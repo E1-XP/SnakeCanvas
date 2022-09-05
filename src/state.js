@@ -22,7 +22,7 @@ export const state = {
     },
   ],
   snakeBorderTails: [],
-  size: 60,
+  size: 50,
   speed: SPEED,
   canvasDimensions: { width: 1280, height: 720 },
   get oneStep() {
