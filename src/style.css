@@ -100,6 +100,7 @@ body {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
+  min-height: 8rem;
 }
 
 @media only screen and (min-width: 500px) {
@@ -109,7 +110,7 @@ body {
 }
 
 .header__image {
-  height: 4rem;
+  height: 3.5rem;
 }
 
 @media only screen and (min-width: 500px) {
