@@ -2,7 +2,7 @@ import { state, setState, ORIENTATION, DIRECTIONS } from "./state";
 import { toFixed2 } from "./helpers";
 
 const beerImg = new Image();
-beerImg.src = "./assets/beer.gif";
+beerImg.src = "./assets/beer.png";
 
 const headImg = new Image();
 headImg.src = "./assets/head.jpg";
