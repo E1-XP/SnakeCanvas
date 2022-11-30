@@ -1,5 +1,3 @@
-require("dotenv").config();
-
 import "../node_modules/normalize.css/normalize.css";
 import "./style.css";
 
