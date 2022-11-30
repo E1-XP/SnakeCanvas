@@ -113,7 +113,7 @@ export const showEndOfGameView = async () => {
       const item = document.createElement("li");
 
       item.classList.add("results__item");
-      item.innerHTML = `${i + 1}. ${v.name} - ${v.score}`;
+      item.textContent = `${i + 1}. ${v.name} - ${v.score}`;
       resultsList.appendChild(item);
     });
   } catch (err) {
