@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.0.3",
     "firebase": "^9.7.0",
     "lodash.debounce": "^4.0.8",
     "normalize.css": "^8.0.1"

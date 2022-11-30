@@ -1,13 +1,11 @@
+require("dotenv").config();
+
 import "../node_modules/normalize.css/normalize.css";
 import "./style.css";
 
 import "./db";
 
-import {
-  setRandomFoodPosition,
-  gameLoop,
-  addAfterTickListener,
-} from "./game";
+import { setRandomFoodPosition, gameLoop, addAfterTickListener } from "./game";
 import { handleResize, setupListeners } from "./ui";
 import { fireQueuedKeyPresses } from "./steering";
 
