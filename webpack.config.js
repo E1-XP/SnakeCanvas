@@ -21,7 +21,7 @@ module.exports = {
     extensions: ["*", ".js"],
   },
   plugins: [
-    new Dotenv(),
+    new Dotenv({ systemvars: true }),
     new HtmlWebpackPlugin({
       template: "./src/index.html",
       inlineSource: ".(js|css)$",
